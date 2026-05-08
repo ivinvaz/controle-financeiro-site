@@ -1,0 +1,37 @@
+{
+  "name": "controle-financeiro-site",
+  "version": "1.0.0",
+  "description": "Aplicação web de controle financeiro desenvolvida com React, focada no gerenciamento de receitas, despesas e metas financeiras.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivinvaz/controle-financeiro-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivinvaz/controle-financeiro-site/issues"
+  },
+  "homepage": "https://github.com/ivinvaz/controle-financeiro-site#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^17.2.3",
+    "express": "~4.16.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.1",
+    "morgan": "~1.9.1",
+    "swagger-ui-express": "^5.0.1",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
