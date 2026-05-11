@@ -8,6 +8,10 @@ async function createUsuario(req, res) {
         return res.status(400).json({ message: 'Nome, email e senha são obrigatórios.' });
     }
     try {
+        const usuarioExistente = await Usuario.findOne({ email });
+        if (usuarioExistente) {
+            return res.status(409).json({ message: 'Email já cadastrado.' });
+        }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(senha, salt);
         const newUsuario = await Usuario.create({ nome, email, senha: hashedPassword, profissao });
@@ -86,7 +90,7 @@ async function deleteUsuario(req, res) {
             return res.status(404).json({ message: 'Usuário não encontrado.' });
         }
         const { senha: _, ...usuarioData } = deletedUsuario.toObject();
-        return res.status(204).json({ message: 'Usuário excluído com sucesso.', usuario: usuarioData });
+        return res.status(200).json({ message: 'Usuário excluído com sucesso.', usuario: usuarioData });
     } catch (error) {
         console.error('Erro ao excluir usuário:', error);
         return res.status(500).json({ message: 'Erro ao excluir usuário.' });
@@ -94,8 +98,13 @@ async function deleteUsuario(req, res) {
 }
 
 async function getUsuario(req, res) {
-    const usuarios = await Usuario.find().select('-senha');
-    return res.status(200).json(usuarios);
+    try {
+        const usuarios = await Usuario.find().select('-senha');
+        return res.status(200).json(usuarios);
+    } catch (error) {
+        console.error('Erro ao buscar usuários:', error);
+        return res.status(500).json({ message: 'Erro ao buscar usuários.' });
+    }
 }
 
 async function getUsuarioById(req, res) {

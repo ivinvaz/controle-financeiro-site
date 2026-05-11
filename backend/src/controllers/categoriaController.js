@@ -3,8 +3,11 @@ const Categoria = require('../models/Categoria');
 async function createCategoria(req, res) {
     const { nome, descricao } = req.body;
     try{
+        const categoriaExistente = await Categoria.findOne({ nome });
+        if (categoriaExistente) {
+            return res.status(409).json({ message: 'Categoria já existe.' });
+        }
         const novaCategoria = await Categoria.create({ nome, descricao });
-
         return res.status(201).json({ message: 'Categoria criada com sucesso.', categoria: novaCategoria });
     } catch (error) {
         if (error.code === 11000 && error.keyPattern && error.keyPattern.nome) {
@@ -43,7 +46,7 @@ async function deleteCategoria(req, res) {
         if (!deletedCategoria) {
             return res.status(404).json({ message: 'Categoria não encontrada.' });
         }
-        return res.status(204).json({ message: 'Categoria excluída com sucesso.' });
+        return res.status(200).json({ message: 'Categoria excluída com sucesso.' });
     } catch (error) {
         console.error('Erro ao excluir categoria:', error);
         return res.status(500).json({ message: 'Erro ao excluir categoria.' });
@@ -51,8 +54,13 @@ async function deleteCategoria(req, res) {
 }
 
 async function getCategorias(req, res) {
-    const categorias = await Categoria.find();
-    return res.status(200).json(categorias);
+    try {
+        const categorias = await Categoria.find();
+        return res.status(200).json(categorias);
+    } catch (error) {
+        console.error('Erro ao buscar categorias:', error);
+        return res.status(500).json({ message: 'Erro ao buscar categorias.' });
+    }
 }
 
 async function getCategoriaById(req, res) {
