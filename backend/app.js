@@ -9,9 +9,6 @@ app.use(express.json());
 
 loadDatabaseConfig();
 
-app.get('/', (req, res) => {
-    res.json({ message: 'Servidor Express rodando!' });
-});
 
 
 app.listen(PORT, () => {
