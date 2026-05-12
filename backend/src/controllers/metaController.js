@@ -3,7 +3,7 @@ const Usuario = require('../models/Usuario');
 
 async function createMeta(req, res) {
     const { meta, mes, ano } = req.body;
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
     try {
         const usuario = await Usuario.findById(usuarioId);
         if (!usuario) {
@@ -28,7 +28,7 @@ async function createMeta(req, res) {
 }
 
 async function getMetas(req, res) {
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
     try {
         const metas = await Meta.find({ Usuario: usuarioId });
         return res.status(200).json({ metas });
@@ -40,7 +40,7 @@ async function getMetas(req, res) {
 
 async function getMetaById(req, res) {
     const { id } = req.params;
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
     try {
         const meta = await Meta.findOne({ _id: id, Usuario: usuarioId });
         if (!meta) {
@@ -56,7 +56,7 @@ async function getMetaById(req, res) {
 async function updateMeta(req, res) {
     const { id } = req.params;
     const { meta, mes, ano } = req.body;
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
     try {
         const metaExistente = await Meta.findOne({ _id: id, Usuario: usuarioId });
         if (!metaExistente) {
@@ -87,7 +87,7 @@ async function updateMeta(req, res) {
 
 async function deleteMeta(req, res) {
     const { id } = req.params;
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
     try {
         const metaExistente = await Meta.findOne({ _id: id, Usuario: usuarioId });
         if (!metaExistente) {

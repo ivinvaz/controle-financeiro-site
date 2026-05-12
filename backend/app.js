@@ -9,10 +9,8 @@ app.use(express.json());
 
 loadDatabaseConfig();
 
-app.get('/', (req, res) => {
-    res.json({ message: 'Servidor Express rodando!' });
-});
-
+const routes = require('./src/routes/index');
+app.use('/api', routes);
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
