@@ -1,0 +1,757 @@
+openapi: 3.0.0
+
+info:
+  title: API Controle Financeiro
+  description: |
+    API responsável pelo gerenciamento de usuários,
+    transações financeiras, categorias, tipos e metas.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor Local
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    Usuario:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6642b9c7f7a31d2d4a6f1234
+
+        nome:
+          type: string
+          example: Gabriel Pereira
+
+        email:
+          type: string
+          example: gabriel@email.com
+
+        profissao:
+          type: string
+          example: Desenvolvedor
+
+        role:
+          type: string
+          example: usuario
+
+    UsuarioInput:
+      type: object
+      required:
+        - nome
+        - email
+        - senha
+      properties:
+        nome:
+          type: string
+
+        email:
+          type: string
+
+        senha:
+          type: string
+
+        profissao:
+          type: string
+
+    LoginInput:
+      type: object
+      required:
+        - email
+        - senha
+      properties:
+        email:
+          type: string
+
+        senha:
+          type: string
+
+    Categoria:
+      type: object
+      properties:
+        _id:
+          type: string
+
+        nome:
+          type: string
+          example: Alimentação
+
+    Tipo:
+      type: object
+      properties:
+        _id:
+          type: string
+
+        nome:
+          type: string
+          example: Receita
+
+    Transacao:
+      type: object
+      properties:
+        _id:
+          type: string
+
+        descricao:
+          type: string
+          example: Salário
+
+        valor:
+          type: number
+          example: 3500
+
+        natureza:
+          type: string
+          example: receita
+
+        Usuario:
+          type: string
+
+        Categoria:
+          type: string
+
+        Tipo:
+          type: string
+
+    Meta:
+      type: object
+      properties:
+        _id:
+          type: string
+
+        meta:
+          type: number
+          example: 5000
+
+        mes:
+          type: number
+          example: 5
+
+        ano:
+          type: number
+          example: 2026
+
+        Usuario:
+          type: string
+
+security:
+  - bearerAuth: []
+
+paths:
+
+  /usuario/registrar:
+    post:
+      tags:
+        - Usuário
+
+      summary: Registrar usuário
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioInput'
+
+      responses:
+        '201':
+          description: Usuário registrado com sucesso
+
+        '400':
+          description: Dados inválidos
+
+        '500':
+          description: Erro interno do servidor
+
+  /usuario/login:
+    post:
+      tags:
+        - Usuário
+
+      summary: Login do usuário
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+
+      responses:
+        '200':
+          description: Login realizado com sucesso
+
+        '400':
+          description: Credenciais inválidas
+
+        '500':
+          description: Erro interno do servidor
+
+  /usuario/editar/{id}:
+    put:
+      tags:
+        - Usuário
+
+      summary: Editar usuário
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioInput'
+
+      responses:
+        '200':
+          description: Usuário atualizado
+
+        '404':
+          description: Usuário não encontrado
+
+        '500':
+          description: Erro interno
+
+  /usuario/deletar/{id}:
+    delete:
+      tags:
+        - Usuário
+
+      summary: Deletar usuário
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Usuário removido
+
+        '404':
+          description: Usuário não encontrado
+
+        '500':
+          description: Erro interno
+
+  /usuario:
+    get:
+      tags:
+        - Usuário
+
+      summary: Listar usuários
+
+      responses:
+        '200':
+          description: Lista de usuários
+
+        '500':
+          description: Erro interno
+
+  /usuario/consultar/{id}:
+    get:
+      tags:
+        - Usuário
+
+      summary: Consultar usuário por ID
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Usuário encontrado
+
+        '404':
+          description: Usuário não encontrado
+
+        '500':
+          description: Erro interno
+
+  /transacao/criar:
+    post:
+      tags:
+        - Transação
+
+      summary: Criar transação
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transacao'
+
+      responses:
+        '201':
+          description: Transação criada
+
+        '400':
+          description: Dados inválidos
+
+        '500':
+          description: Erro interno
+
+  /transacao/editar/{id}:
+    put:
+      tags:
+        - Transação
+
+      summary: Editar transação
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transacao'
+
+      responses:
+        '200':
+          description: Transação atualizada
+
+        '404':
+          description: Transação não encontrada
+
+        '500':
+          description: Erro interno
+
+  /transacao/deletar/{id}:
+    delete:
+      tags:
+        - Transação
+
+      summary: Deletar transação
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Transação removida
+
+        '404':
+          description: Transação não encontrada
+
+        '500':
+          description: Erro interno
+
+  /transacao/consultar:
+    get:
+      tags:
+        - Transação
+
+      summary: Listar transações
+
+      responses:
+        '200':
+          description: Lista de transações
+
+        '500':
+          description: Erro interno
+
+  /transacao/consultar/{id}:
+    get:
+      tags:
+        - Transação
+
+      summary: Consultar transação por ID
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Transação encontrada
+
+        '404':
+          description: Transação não encontrada
+
+        '500':
+          description: Erro interno
+
+  /transacao/consultar/usuario/{id}:
+    get:
+      tags:
+        - Transação
+
+      summary: Consultar transações por usuário
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Lista de transações do usuário
+
+        '404':
+          description: Usuário não encontrado
+
+        '500':
+          description: Erro interno
+
+  /tipo/criar:
+    post:
+      tags:
+        - Tipo
+
+      summary: Criar tipo
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tipo'
+
+      responses:
+        '201':
+          description: Tipo criado
+
+        '400':
+          description: Dados inválidos
+
+        '500':
+          description: Erro interno
+
+  /tipo/editar/{id}:
+    put:
+      tags:
+        - Tipo
+
+      summary: Editar tipo
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tipo'
+
+      responses:
+        '200':
+          description: Tipo atualizado
+
+        '404':
+          description: Tipo não encontrado
+
+        '500':
+          description: Erro interno
+
+  /tipo/deletar/{id}:
+    delete:
+      tags:
+        - Tipo
+
+      summary: Deletar tipo
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Tipo removido
+
+        '404':
+          description: Tipo não encontrado
+
+        '500':
+          description: Erro interno
+
+  /tipo/consultar:
+    get:
+      tags:
+        - Tipo
+
+      summary: Listar tipos
+
+      responses:
+        '200':
+          description: Lista de tipos
+
+        '500':
+          description: Erro interno
+
+  /categoria/criar:
+    post:
+      tags:
+        - Categoria
+
+      summary: Criar categoria
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Categoria'
+
+      responses:
+        '201':
+          description: Categoria criada
+
+        '400':
+          description: Dados inválidos
+
+        '500':
+          description: Erro interno
+
+  /categoria/editar/{id}:
+    put:
+      tags:
+        - Categoria
+
+      summary: Editar categoria
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Categoria'
+
+      responses:
+        '200':
+          description: Categoria atualizada
+
+        '404':
+          description: Categoria não encontrada
+
+        '500':
+          description: Erro interno
+
+  /categoria/deletar/{id}:
+    delete:
+      tags:
+        - Categoria
+
+      summary: Deletar categoria
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Categoria removida
+
+        '404':
+          description: Categoria não encontrada
+
+        '500':
+          description: Erro interno
+
+  /categoria/consultar:
+    get:
+      tags:
+        - Categoria
+
+      summary: Listar categorias
+
+      responses:
+        '200':
+          description: Lista de categorias
+
+        '500':
+          description: Erro interno
+
+  /meta/criar:
+    post:
+      tags:
+        - Meta
+
+      summary: Criar meta
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Meta'
+
+      responses:
+        '201':
+          description: Meta criada
+
+        '400':
+          description: Dados inválidos
+
+        '500':
+          description: Erro interno
+
+  /meta/editar/{id}:
+    put:
+      tags:
+        - Meta
+
+      summary: Editar meta
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Meta'
+
+      responses:
+        '200':
+          description: Meta atualizada
+
+        '404':
+          description: Meta não encontrada
+
+        '500':
+          description: Erro interno
+
+  /meta/deletar/{id}:
+    delete:
+      tags:
+        - Meta
+
+      summary: Deletar meta
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Meta removida
+
+        '404':
+          description: Meta não encontrada
+
+        '500':
+          description: Erro interno
+
+  /meta/consultar:
+    get:
+      tags:
+        - Meta
+
+      summary: Listar metas
+
+      responses:
+        '200':
+          description: Lista de metas
+
+        '500':
+          description: Erro interno
+
+  /meta/consultar/{id}:
+    get:
+      tags:
+        - Meta
+
+      summary: Consultar meta por ID
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Meta encontrada
+
+        '404':
+          description: Meta não encontrada
+
+        '500':
+          description: Erro interno
+
+  /meta/consultar/usuario/{id}:
+    get:
+      tags:
+        - Meta
+
+      summary: Consultar metas por usuário
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Lista de metas do usuário
+
+        '404':
+          description: Usuário não encontrado
+
+        '500':
+          description: Erro interno
