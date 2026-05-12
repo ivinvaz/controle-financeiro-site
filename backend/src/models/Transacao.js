@@ -8,7 +8,7 @@ const transacaoSchema = new mogoose.Schema({
     Categoria: { type: mogoose.Schema.Types.ObjectId, ref: 'Categoria', required: true },
     Tipo: { type: mogoose.Schema.Types.ObjectId, ref: 'Tipo', required: true },
     nome: { type: String, required: true },
-    natureza: { type: String, required: true, Enum: ['receita', 'despesa'] },
+    natureza: { type: String, required: true, enum: ['receita', 'despesa'] },
     descricao: { type: String },
     valor: { type: Number, required: true },
     dataRealizacao: { type: Date, default: Date.now },

@@ -1,4 +1,3 @@
-
 async function ownerMiddleware(req, res, next) {
     const user = req.user;
     const resourceOwnerId = req.params.id;

@@ -48,7 +48,7 @@ async function login(req, res) {
         const payload = { id: usuario._id, email: usuario.email, role: usuario.role, iat: Math.floor(Date.now() / 1000) };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
         const { senha: _, ...usuarioData } = usuario.toObject();
-        return res.status(200).json({ message: 'Login realizado com sucesso.', token, usuario: usuarioData, payload });
+        return res.status(200).json({ message: 'Login realizado com sucesso.', token, usuario: usuarioData });
     } catch (error) {
         console.error('Erro ao realizar login:', error);
         return res.status(500).json({ message: 'Erro ao realizar login.' });
