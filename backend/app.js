@@ -9,7 +9,8 @@ app.use(express.json());
 
 loadDatabaseConfig();
 
-
+const routes = require('./src/routes/index');
+app.use('/api', routes);
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);

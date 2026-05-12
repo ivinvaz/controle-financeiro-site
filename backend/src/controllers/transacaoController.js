@@ -6,7 +6,7 @@ const Transacao = require('../models/Transacao');
 async function createTransacao(req, res) {
     const { nome, natureza, descricao, valor, dataRealizacao } = req.body;
     const { categoriaId, tipoId } = req.body;
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
 
     try {
         const usuario = await Usuario.findById(usuarioId);
@@ -48,7 +48,7 @@ async function createTransacao(req, res) {
 }
 
 async function getTransacoes(req, res) {
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
     try {
         const transacoes = await Transacao.find({ Usuario: usuarioId });
         return res.status(200).json({ transacoes });
@@ -60,7 +60,7 @@ async function getTransacoes(req, res) {
 
 async function getTransacaoById(req, res) {
     const { id } = req.params;
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
     try {
         const transacao = await Transacao.findOne({ _id: id, Usuario: usuarioId });
         if (!transacao) {
@@ -77,7 +77,7 @@ async function updateTransacao(req, res) {
     const { id } = req.params;
     const { nome, natureza, descricao, valor, dataRealizacao } = req.body;
     const { categoriaId, tipoId } = req.body;
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
     try {
         const transacaoExistente = await Transacao.findOne({ _id: id, Usuario: usuarioId });
         if (!transacaoExistente) {
@@ -114,7 +114,7 @@ async function updateTransacao(req, res) {
 
 async function deleteTransacao(req, res) {
     const { id } = req.params;
-    const usuarioId = req.payload.id;
+    const usuarioId = req.user.id;
     try {
         const transacaoExistente = await Transacao.findOne({ _id: id, Usuario: usuarioId });
         if (!transacaoExistente) {
