@@ -8,6 +8,8 @@
     "test": "jest --watchAll",
     "dev": "nodemon app.js",
     "start": "node app.js"
+    ,"docker:build": "docker build -t controle-financeiro-backend .",
+    "docker:run": "docker run --rm -p 3000:3000 controle-financeiro-backend"
   },
   "repository": {
     "type": "git",
