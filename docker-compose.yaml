@@ -1,0 +1,43 @@
+services:
+  db:
+    image: mongodb/mongodb-atlas-local:latest
+    container_name: mongodb-atlas-local
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=mongodb
+      - MONGODB_INITDB_ROOT_PASSWORD=34045629
+    volumes:
+      - mongo-data:/data/db
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-node
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=mongodb://mongodb:34045629@db:27017/controle?directConnection=true&authSource=admin
+      - PORT-8000
+    restart: on-failure
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-node
+    ports:
+      - "5173:5173"
+    restart: on-failure
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
