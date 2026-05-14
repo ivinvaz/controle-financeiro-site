@@ -1,17 +1,20 @@
+# Estágio base: define a imagem leve do Node 20
 FROM node:20-alpine
 
-WORKDIR /usr/src/app
+# Define o diretório de trabalho dentro do container
+WORKDIR /app
 
-# Install only production dependencies and keep the final image small
+# Copia apenas os arquivos de dependências primeiro (otimiza o cache)
 COPY package*.json ./
-RUN npm ci --only=production
 
-# Copy application source code
+# Instala as dependências
+RUN npm install
+
+# Copia o restante dos arquivos do projeto
 COPY . .
 
+# Expõe a porta que sua aplicação utiliza (ajuste se não for 3000)
 EXPOSE 8000
 
-ENV NODE_ENV=production
-ENV PORT=8000
-
-CMD ["npm", "start"]
+# Comando para iniciar a aplicação em modo de desenvolvimento
+CMD ["npm", "run", "dev"]
