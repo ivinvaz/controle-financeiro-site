@@ -1,3 +1,15 @@
+import { Routes, Route } from "react-router-dom";
+import Layout from "./layouts/Layout";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Registro from "./pages/Registro";
+import ListagemMeta from "./pages/ListagemMeta";
+import CadastroMeta from "./pages/CadastroMeta";
+import EdicaoMeta from "./pages/EdicaoMeta";
+import ListagemTransacao from "./pages/ListagemTransacao";
+import CadastroTransacao from "./pages/CadastroTransacao";
+import EdicaoTransacao from "./pages/EdicaoTransacao";
+
 function App() {
   return (
     <Routes>
