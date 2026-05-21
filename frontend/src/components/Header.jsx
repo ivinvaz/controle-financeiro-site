@@ -1,7 +1,7 @@
 function Header() {
   return (
-    <header className="header">
-      <h1>Meu App de Finanças</h1>
+    <header className="header text-xl p-8 text-center">
+      <h1>Header</h1>
     </header>
   );
 }

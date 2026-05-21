@@ -9,8 +9,12 @@ function Login() {
   return (
     <div>
       <h1>Login</h1>
-      <p>Página de login</p>
-      <button onClick={handleEntrar}>Entrar</button>
+      <button
+        className="bg-gray-500 text-white py-0 px-4 rounded"
+        onClick={handleEntrar}
+      >
+        Entrar
+      </button>
     </div>
   );
 }
