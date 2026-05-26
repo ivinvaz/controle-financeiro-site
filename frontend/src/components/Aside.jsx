@@ -1,8 +1,7 @@
+import { HandCoins, Minimize2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import AsideButton from "./AsideButton";
-import hand from "../assets/hand.png";
-import minimize from "../assets/minimize.png";
 
 function Aside() {
   const { pathname } = useLocation();
@@ -30,7 +29,7 @@ function Aside() {
         <aside className="w-52 min-h-screen bg-[#0d4a5c] flex flex-col gap-6 px-5 py-8 text-lg font-bold text-center">
           <h2 className="text-white text-lg font-medium text-center tracking-wide pb-2 border-b-2 border-white flex items-center justify-center gap-2">
             {" "}
-            Menu <img src={hand} alt="mao-do-menu" className="w-6 h-6" />
+            Menu <HandCoins className="w-6 h-6" />
           </h2>
 
           <nav>
@@ -68,7 +67,7 @@ function Aside() {
             className="mt-auto text-white/60 hover:text-white transition-colors text-xl justify-items-center"
             aria-label="Fechar menu"
           >
-            <img src={minimize} alt="botao de minimizar" className="w-6 h-6" />
+            <Minimize2 className="w-6 h-6" />
           </button>
         </aside>
       </div>
