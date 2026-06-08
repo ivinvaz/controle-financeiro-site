@@ -27,3 +27,4 @@ export default function Button({ label, name, id, grande, fontcolor, bgColor }) 
     </section>
   );
 }
+
