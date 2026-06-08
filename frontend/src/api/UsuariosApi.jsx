@@ -2,6 +2,9 @@ import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
+const DEFAULT_ERROR_MESSAGE = 'Nao foi possivel concluir a solicitacao. Tente novamente.';
+const CONNECTION_ERROR_MESSAGE = 'Nao foi possivel conectar ao servidor. Verifique se o backend esta rodando e tente novamente.';
+
 function getToken() {
   return window.localStorage.getItem('token');
 }
@@ -25,20 +28,55 @@ function getAuthHeaders() {
 
 const api = axios.create({
   baseURL: BASE_URL,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
+function getResponseMessage(data) {
+  if (!data) return '';
+  if (typeof data === 'string') return data;
+  if (typeof data.message === 'string') return data.message;
+  if (typeof data.error === 'string') return data.error;
+
+  return '';
+}
+
+function normalizeApiError(error) {
+  const response = error.response;
+  const message =
+    getResponseMessage(response?.data) ||
+    response?.statusText ||
+    (error.code === 'ECONNABORTED' ? 'Tempo de resposta excedido. Tente novamente.' : '') ||
+    (!response ? CONNECTION_ERROR_MESSAGE : '') ||
+    error.message ||
+    DEFAULT_ERROR_MESSAGE;
+
+  const err = new Error(message);
+  err.status = response?.status;
+  err.data = response?.data;
+  err.code = error.code;
+  err.isConnectionError = !response;
+
+  return err;
+}
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const response = error.response;
-    const message = response?.data?.message || response?.statusText || error.message;
-    const err = new Error(message);
-    err.status = response?.status;
-    err.data = response?.data;
-    return Promise.reject(err);
+    const normalizedError = normalizeApiError(error);
+
+    if ([401, 403].includes(normalizedError.status)) {
+      removeToken();
+
+      const isPublicRoute = ['/login', '/registro'].includes(window.location.pathname);
+      if (!isPublicRoute) {
+        window.location.replace('/login');
+      }
+    }
+
+    return Promise.reject(normalizedError);
   }
 );
 
@@ -83,5 +121,6 @@ export {
   requestWithAuth,
   registerUser,
   loginUser,
+  normalizeApiError,
 };
 

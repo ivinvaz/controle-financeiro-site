@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import Conteiner from '../components/Conteiner';
 import Input from '../components/Input';
 import iconSrc from '../img/icon.svg';
+import { loginUsuario } from '../services/UsuarioService';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
@@ -51,14 +52,22 @@ function Login() {
         setValue(name, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     };
 
-    const onSubmit = () => {
+    const onSubmit = async (data) => {
         setSubmitError('');
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            localStorage.setItem('token', 'demo-token');
+
+        try {
+            await loginUsuario({
+                email: data.email,
+                senha: data.senha,
+            });
+
             navigate('/');
-        }, 500);
+        } catch (error) {
+            setSubmitError(error.message || 'Nao foi possivel entrar. Tente novamente.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -148,6 +157,7 @@ function Login() {
                                 label={loading ? 'Entrando...' : 'Entrar'}
                                 name="entrar"
                                 id="entrar"
+                                disabled={loading}
                                 grande
                                 bgColor="#114B5F"
                                 fontcolor="#fff"

@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import Conteiner from '../components/Conteiner';
 import Input from '../components/Input';
 import iconSrc from '../img/icon.svg';
+import { registrarUsuario } from '../services/UsuarioService';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
@@ -76,14 +77,24 @@ function Registro() {
         setValue(name, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     };
 
-    const onSubmit = () => {
+    const onSubmit = async (data) => {
         setSubmitError('');
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            localStorage.setItem('token', 'demo-token');
+
+        try {
+            await registrarUsuario({
+                nome: data.nome,
+                profissao: data.profissao,
+                email: data.email,
+                senha: data.senha,
+            });
+
             navigate('/');
-        }, 500);
+        } catch (error) {
+            setSubmitError(error.message || 'Nao foi possivel registrar. Tente novamente.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -188,6 +199,7 @@ function Registro() {
                                 label={loading ? 'Registrando...' : 'Registrar'}
                                 name="registrar"
                                 id="registrar"
+                                disabled={loading}
                                 grande
                                 bgColor="#114B5F"
                                 fontcolor="#fff"
