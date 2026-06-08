@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Settings, Flag, ChartArea } from 'lucide-react';
+import { Eye, Settings, Flag, ChartArea } from 'lucide-react';
 import Button from '../components/Button';
 import Conteiner from '../components/Conteiner';
 import Input from '../components/Input';
@@ -15,6 +15,7 @@ function Login() {
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm({
         mode: 'onTouched',
@@ -22,11 +23,37 @@ function Login() {
     });
     const [submitError, setSubmitError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [showSenha, setShowSenha] = useState(false);
+
+    useEffect(() => {
+        register('email', {
+            required: 'E-mail é obrigatório.',
+            pattern: {
+                value: emailRegex,
+                message: 'Insira um e-mail válido.',
+            },
+        });
+        register('senha', {
+            required: 'Senha é obrigatória.',
+            minLength: {
+                value: 8,
+                message: 'A senha deve ter pelo menos 8 caracteres.',
+            },
+            pattern: {
+                value: passwordPattern,
+                message: 'A senha deve ter letra maiúscula, número e caractere especial.',
+            },
+        });
+    }, [register]);
+
+    const handleFormChange = (event) => {
+        const { name, value } = event.target;
+        if (!name) return;
+        setValue(name, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+    };
 
     const onSubmit = () => {
-        setLoading(true);
         setSubmitError('');
+        setLoading(true);
         setTimeout(() => {
             setLoading(false);
             localStorage.setItem('token', 'demo-token');
@@ -70,106 +97,74 @@ function Login() {
             </aside>
 
             <section className="flex flex-1 items-center justify-center bg-white px-4 py-12 sm:px-8">
-                <Conteiner
-                    backgroundColor="bg-white"
-                    borderColor="border-2 border-[#c8d6d6]"
-                    className="w-full max-w-[380px]"
-                >
-                    <header className="flex flex-col items-center gap-2 mb-6">
-                        <img
-                            src={iconSrc}
-                            alt="GranaBoard"
-                            className="w-16 h-16 object-contain"
-                            draggable={false}
-                        />
-                        <h1 className="text-xl font-bold text-[#0d4a4a] tracking-tight">GranaBoard</h1>
-                    </header>
-
-                    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-1 flex-col gap-4">
-                        <fieldset className="flex flex-1 flex-col gap-4 border-0 p-0 m-0">
-                            <Input
-                                id="email"
-                                label="E-mail"
-                                type="email"
-                                placeholder="Digite seu e-mail"
-                                error={errors.email?.message}
-                                required
-                                autoComplete="email"
-                                {...register('email', {
-                                    required: 'E-mail é obrigatório.',
-                                    pattern: {
-                                        value: emailRegex,
-                                        message: 'Insira um e-mail válido.',
-                                    },
-                                })}
+                <div className="w-full max-w-[380px]">
+                    <Conteiner>
+                        <header className="flex flex-col items-center gap-2 mb-6">
+                            <img
+                                src={iconSrc}
+                                alt="GranaBoard"
+                                className="w-16 h-16 object-contain"
+                                draggable={false}
                             />
+                            <h1 className="text-xl font-bold text-[#0d4a4a] tracking-tight">GranaBoard</h1>
+                        </header>
 
-                            <fieldset className="flex flex-1 flex-col gap-1 border-0 p-0 m-0">
-                                <label htmlFor="senha" className="text-sm font-medium text-[#1a3a3a] select-none">
-                                    Senha
-                                </label>
-                                <span className="relative flex flex-1">
-                                    <input
-                                        id="senha"
-                                        type={showSenha ? 'text' : 'password'}
-                                        placeholder="Digite sua senha"
-                                        autoComplete="current-password"
-                                        aria-invalid={!!errors.senha}
-                                        aria-describedby={errors.senha ? 'senha-error' : undefined}
-                                        className="flex flex-1 w-full rounded-xl border border-[#c8d6d6] bg-white px-4 py-3 pr-10 text-sm text-[#1a3a3a] placeholder-[#9ab0b0] outline-none transition-all duration-150 focus:border-[#1a5c5c] focus:ring-2 focus:ring-[#1a5c5c]/20 hover:border-[#9ab0b0]"
-                                        {...register('senha', {
-                                            required: 'Senha é obrigatória.',
-                                            minLength: {
-                                                value: 8,
-                                                message: 'A senha deve ter pelo menos 8 caracteres.',
-                                            },
-                                            pattern: {
-                                                value: passwordPattern,
-                                                message: 'A senha deve ter letra maiúscula, número e caractere especial.',
-                                            },
-                                        })}
-                                    />
-                                    <button
-                                        type="button"
-                                        aria-label={showSenha ? 'Ocultar senha' : 'Mostrar senha'}
-                                        onClick={() => setShowSenha((v) => !v)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6a8f8f] hover:text-[#1a5c5c] transition-colors focus:outline-none"
-                                    >
-                                        {showSenha ? <EyeOff /> : <Eye />}
-                                    </button>
-                                </span>
+                        <form onSubmit={handleSubmit(onSubmit)} onChange={handleFormChange} noValidate className="flex flex-1 flex-col gap-4">
+                            <fieldset className="flex flex-1 flex-col gap-2 border-0 p-0 m-0">
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    label="E-mail"
+                                    type="email"
+                                    placeholder="Digite seu e-mail"
+                                />
+                                {errors.email && (
+                                    <span role="alert" className="px-2 text-xs font-medium text-rose-600">
+                                        {errors.email.message}
+                                    </span>
+                                )}
+
+                                <Input
+                                    id="senha"
+                                    name="senha"
+                                    label="Senha"
+                                    type="password"
+                                    placeholder="Digite sua senha"
+                                />
                                 {errors.senha && (
-                                    <span id="senha-error" role="alert" className="text-xs font-medium text-rose-600 mt-0.5">
+                                    <span role="alert" className="px-2 text-xs font-medium text-rose-600">
                                         {errors.senha.message}
                                     </span>
                                 )}
                             </fieldset>
-                        </fieldset>
 
-                        {submitError && (
-                            <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                                {submitError}
+                            {submitError && (
+                                <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                                    {submitError}
+                                </p>
+                            )}
+
+                            <Button
+                                label={loading ? 'Entrando...' : 'Entrar'}
+                                name="entrar"
+                                id="entrar"
+                                grande
+                                bgColor="#114B5F"
+                                fontcolor="#fff"
+                            />
+
+                            <p className="text-center text-sm text-[#4a6a6a] mt-1">
+                                Se não estiver registrado:{' '}
+                                <Link
+                                    to="/registro"
+                                    className="text-[#1a5c5c] font-semibold hover:text-[#0d4a4a] underline-offset-2 hover:underline transition-colors"
+                                >
+                                    Registre-se
+                                </Link>
                             </p>
-                        )}
-
-                        <Button
-                            label={loading ? 'Entrando...' : 'Entrar'}
-                            type="submit"
-                            disabled={loading}
-                            className="mt-1 w-full"
-                        />
-
-                        <p className="text-center text-sm text-[#4a6a6a] mt-1">
-                            Se não estiver registrado:{' '}
-                            <Link
-                                to="/registro"
-                                className="text-[#1a5c5c] font-semibold hover:text-[#0d4a4a] underline-offset-2 hover:underline transition-colors"
-                            >
-                                Registre-se
-                            </Link>
-                        </p>
-                    </form>
-                </Conteiner>
+                        </form>
+                    </Conteiner>
+                </div>
             </section>
         </main>
     );

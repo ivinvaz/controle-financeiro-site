@@ -1,33 +1,30 @@
-function Button({
-  label,
-  onClick,
-  type = 'button',
-  disabled = false,
-  variant = 'primary',
-  className = '',
-  ...rest
-}) {
-  const base =
-    'flex flex-1 items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-1 cursor-pointer select-none';
-
-  const variants = {
-    primary:
-      'bg-[#1a5c5c] text-white hover:bg-[#154a4a] active:bg-[#113d3d] focus:ring-[#1a5c5c]/40 disabled:bg-[#c8d6d6] disabled:text-[#6a8f8f] disabled:cursor-not-allowed',
-    secondary:
-      'bg-white text-[#1a5c5c] border border-[#1a5c5c] hover:bg-[#f0f7f7] active:bg-[#e0eeee] focus:ring-[#1a5c5c]/30',
-  };
-
+/**
+ * Button
+ * 
+ * Componente reutilizável que renderiza um botão estilizado com Tailwind.
+ * 
+ * Props:
+ * - label: texto exibido no botão
+ * - name: atributo name do botão
+ * - id: identificador único
+ * - grande: booleano que define altura e peso da fonte (true = botão maior e negrito)
+ * - fontcolor: cor da fonte (string, ex: "#fff" ou "red")
+ * - bgColor: cor de fundo (string, ex: "#114B5F" ou "blue")
+ * 
+ * O botão ajusta dinamicamente seu tamanho e estilo conforme as props recebidas.
+ */
+export default function Button({ label, name, id, grande, fontcolor, bgColor }) {
   return (
-    <button
-      type={type}
-      disabled={disabled}
-      onClick={onClick}
-      className={`${base} ${variants[variant] ?? variants.primary} ${className}`}
-      {...rest}
-    >
-      {label}
-    </button>
+    <section className="flex flex-col m-2">
+      <button
+        name={name}
+        id={id}
+        style={{ backgroundColor: bgColor, color: fontcolor }}
+        className={`rounded-[15px] ${grande ? "h-[50px] font-bold" : "h-[35px]"} text-[20px]`}
+      >
+        {label}
+      </button>
+    </section>
   );
 }
 
-export default Button;
