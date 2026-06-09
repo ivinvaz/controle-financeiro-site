@@ -1,10 +1,12 @@
 import { HandCoins, Minimize2 } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { removeToken } from "../api/UsuariosApi";
 import AsideButton from "./AsideButton";
 
 function Aside() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [aberto, setAberto] = useState(false);
 
   const links = [
@@ -12,6 +14,12 @@ function Aside() {
     { to: "/transacoes", label: "Transações" },
     { to: "/metas", label: "Metas" },
   ];
+
+  const handleLogout = () => {
+    removeToken();
+    setAberto(false);
+    navigate("/login", { replace: true });
+  };
 
   return (
     <>
@@ -51,14 +59,14 @@ function Aside() {
               ))}
 
               <li>
-                <Link
-                  to="/login"
-                  onClick={() => setAberto(false)}
-                  className="flex items-center justify-between px-4 py-2.5 rounded-lg text-sm text-[#e8f4f8] border border-white/15 bg-white/10 hover:bg-white/15 transition-colors"
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex w-full items-center justify-between px-4 py-2.5 rounded-lg text-sm text-[#e8f4f8] border border-white/15 bg-white/10 hover:bg-white/15 transition-colors"
                 >
                   <span>Logout</span>
                   <span>→</span>
-                </Link>
+                </button>
               </li>
             </ul>
           </nav>

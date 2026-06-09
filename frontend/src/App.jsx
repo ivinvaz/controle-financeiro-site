@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -9,10 +9,22 @@ import EdicaoMeta from "./pages/EdicaoMeta";
 import ListagemTransacao from "./pages/ListagemTransacao";
 import CadastroTransacao from "./pages/CadastroTransacao";
 import EdicaoTransacao from "./pages/EdicaoTransacao";
+import { getToken } from "./api/UsuariosApi";
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = Boolean(localStorage.getItem("token"));
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  const location = useLocation();
+  const isAuthenticated = Boolean(getToken());
+
+  return isAuthenticated ? (
+    children
+  ) : (
+    <Navigate to="/login" replace state={{ from: location.pathname }} />
+  );
+};
+
+const PublicRoute = ({ children }) => {
+  const isAuthenticated = Boolean(getToken());
+  return isAuthenticated ? <Navigate to="/" replace /> : children;
 };
 
 function App() {
@@ -20,8 +32,22 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Rotas públicas */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Registro />} />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/registro"
+          element={
+            <PublicRoute>
+              <Registro />
+            </PublicRoute>
+          }
+        />
 
         {/* Rotas privadas */}
         <Route
