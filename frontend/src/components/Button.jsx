@@ -1,30 +1,29 @@
-/**
- * Button
- * 
- * Componente reutilizável que renderiza um botão estilizado com Tailwind.
- * 
- * Props:
- * - label: texto exibido no botão
- * - name: atributo name do botão
- * - id: identificador único
- * - grande: booleano que define altura e peso da fonte (true = botão maior e negrito)
- * - fontcolor: cor da fonte (string, ex: "#fff" ou "red")
- * - bgColor: cor de fundo (string, ex: "#114B5F" ou "blue")
- * 
- * O botão ajusta dinamicamente seu tamanho e estilo conforme as props recebidas.
- */
-export default function Button({ label, name, id, grande, fontcolor, bgColor, disabled = false }) {
+export default function Button({
+  label,
+  children,
+  name,
+  id,
+  type = "submit",
+  grande,
+  fontcolor,
+  bgColor,
+  disabled = false,
+  onClick,
+}) {
   return (
-    <section className="flex flex-col m-2">
+    <section className="flex flex-1 flex-col m-2">
       <button
-        type="submit"
+        type={type}
         name={name}
         id={id}
         disabled={disabled}
+        onClick={onClick}
         style={{ backgroundColor: bgColor, color: fontcolor }}
-        className={`rounded-[15px] ${grande ? "h-[50px] font-bold" : "h-[35px]"} text-[20px] disabled:cursor-not-allowed disabled:opacity-70`}
+        className={`flex flex-1 items-center justify-center rounded-[15px] ${
+          grande ? "h-[50px] font-bold" : "h-[35px]"
+        } text-[20px] disabled:cursor-not-allowed disabled:opacity-70`}
       >
-        {label}
+        {children || label}
       </button>
     </section>
   );
