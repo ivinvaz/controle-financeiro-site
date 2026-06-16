@@ -92,40 +92,5 @@ async function obterPorId(id) {
   }
 }
 
-// Validações
-function validarMeta(dados) {
-  const erros = {};
 
-  if (!dados.nome || dados.nome.trim() === '') {
-    erros.nome = 'Nome da meta é obrigatório';
-  }
-
-  if (!dados.valor || dados.valor <= 0) {
-    erros.valor = 'Valor da meta é obrigatório e deve ser maior que 0';
-  }
-
-  if (typeof dados.valor === 'string' && isNaN(parseFloat(dados.valor))) {
-    erros.valor = 'Valor deve ser um número válido';
-  }
-
-  if (dados.mes) {
-    const mes = parseInt(dados.mes);
-    if (isNaN(mes) || mes < 1 || mes > 12) {
-      erros.mes = 'Mês deve estar entre 1 e 12';
-    }
-  }
-
-  if (dados.ano) {
-    const ano = parseInt(dados.ano);
-    if (isNaN(ano) || ano < 2000 || ano > 2100) {
-      erros.ano = 'Ano deve estar entre 2000 e 2100';
-    }
-  }
-
-  return {
-    valido: Object.keys(erros).length === 0,
-    erros,
-  };
-}
-
-export { criar, editar, deletar, listar, obterPorId, validarMeta };
+export { criar, editar, deletar, listar, obterPorId };
