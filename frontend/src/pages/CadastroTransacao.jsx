@@ -80,8 +80,8 @@ function CadastroTransacao() {
   };
 
   return (
-    <main className="flex flex-1 min-h-screen bg-[#EEE5E9] p-4">
-      <section className="flex flex-1 max-w-3xl mx-auto">
+    <main className="min-h-screen flex items-center justify-center bg-white px-4 py-10 sm:px-8">
+      <section className="w-full max-w-[400px]">
         <Conteiner>
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -89,7 +89,7 @@ function CadastroTransacao() {
             noValidate
             className="flex flex-1 flex-col gap-2"
           >
-            <h1 className="text-2xl font-bold text-[#114B5F] m-2">
+            <h1 className="text-xl font-bold text-[#0d4a4a] text-center mb-4">
               Cadastro de Transação
             </h1>
 
