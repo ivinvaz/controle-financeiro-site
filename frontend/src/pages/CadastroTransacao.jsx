@@ -176,15 +176,15 @@ function CadastroTransacao() {
                 fontcolor="#fff"
               />
 
-              <Button
-                label="Cancelar"
-                name="cancelar"
-                id="cancelar"
-                bgColor="#EEE5E9"
-                fontcolor="#114B5F"
-                grande
-                onClick={() => navigate("/transacoes")}
-              />
+              <section className="flex flex-col m-2">
+                <button
+                  type="button"
+                  onClick={() => navigate("/transacoes")}
+                  className="rounded-[15px] h-[50px] text-[20px] font-bold border border-[#114B5F] text-[#114B5F] bg-[#EEE5E9]"
+                >
+                  Cancelar
+                </button>
+              </section>
             </div>
           </form>
         </Conteiner>
