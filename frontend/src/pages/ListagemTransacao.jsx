@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Conteiner from "../components/Conteiner";
 import ListingBlock from "../components/ListingBlock";
 import transacaoServices from "../services/TransacaoService";
 
@@ -34,40 +33,19 @@ function ListagemTransacao() {
     carregarTransacoes();
   }, []);
 
-  return (
-    <main className="flex flex-1 min-h-screen bg-[#EEE5E9] p-4">
-      <Conteiner className="bg-white">
-        <h1 className="text-2xl font-bold text-[#114B5F] m-2">
-          Listagem de Transações
-        </h1>
+  if (carregando) {
+    return <p className="m-2 text-slate-600">Carregando transações...</p>;
+  }
 
-        {carregando && (
-          <p className="m-2 text-slate-600">
-            Carregando transações...
-          </p>
-        )}
+  if (erro) {
+    return <p className="m-2 text-red-600">{erro}</p>;
+  }
 
-        {erro && (
-          <p className="m-2 text-red-600">
-            {erro}
-          </p>
-        )}
+  if (transacoes.length === 0) {
+    return <p className="m-2 text-slate-600">Nenhuma transação encontrada.</p>;
+  }
 
-        {!carregando && !erro && transacoes.length === 0 && (
-          <p className="m-2 text-slate-600">
-            Nenhuma transação encontrada.
-          </p>
-        )}
-
-        {!carregando && !erro && transacoes.length > 0 && (
-          <ListingBlock
-            options={transacoes}
-            type="transacoes"
-          />
-        )}
-      </Conteiner>
-    </main>
-  );
+  return <ListingBlock options={transacoes} type="transacoes" />;
 }
 
 export default ListagemTransacao;
