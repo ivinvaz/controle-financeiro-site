@@ -13,7 +13,7 @@
  * 
  * O botão ajusta dinamicamente seu tamanho e estilo conforme as props recebidas.
  */
-export default function Button({ label, name, id, grande, fontcolor, bgColor, disabled = false }) {
+export default function Button({ label, name, id, grande, fontcolor, bgColor, disabled = false, onClick }) {
   return (
     <section className="flex flex-col m-2">
       <button
@@ -21,6 +21,7 @@ export default function Button({ label, name, id, grande, fontcolor, bgColor, di
         name={name}
         id={id}
         disabled={disabled}
+        onClick={onClick}
         style={{ backgroundColor: bgColor, color: fontcolor }}
         className={`rounded-[15px] ${grande ? "h-[50px] font-bold" : "h-[35px]"} text-[20px] disabled:cursor-not-allowed disabled:opacity-70`}
       >

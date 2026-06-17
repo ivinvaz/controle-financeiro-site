@@ -3,7 +3,10 @@ import { consultarTodos as listarTransacao } from "./transacaoServices";
 
 function SomarValores(lista, campoValor = "valor")
 {
-    return lista.reduce((soma, item) => soma + item[campoValor], 0);
+    return lista.reduce((soma, item) => {
+        const valid = Number(item?.[campoValor] ?? 0);
+        return soma + valid ? valid : 0;
+    });
 }
 
 function AgruparPorCategoria(transacoes)
@@ -74,7 +77,7 @@ async function GetTransacoesDate(DataInicio = null, DataFim = null)
         })
     }
 
-    return transacoesFiltradas;
+    return transacoesFiltradas ?? [];
 }
 
 async function GetMetasDate(DataInicio = null, DataFim = null)
@@ -129,7 +132,7 @@ async function GetMetasDate(DataInicio = null, DataFim = null)
         });
     }
 
-    return metasFiltradas;
+    return metasFiltradas ?? [];
 }
 
 async function GetSumReceitas(DataInicio = null, DataFim = null) 

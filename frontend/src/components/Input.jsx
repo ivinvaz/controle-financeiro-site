@@ -14,7 +14,7 @@
  * garantindo consistência visual. É ideal para formulários onde cada campo precisa
  * de um rótulo associado.
  */
-export default function Input({label, name, id, type, placeholder}) {
+export default function Input({label, name, id, type, placeholder, onChange, value}) {
   return (
     <section className="flex flex-col m-2">
       <label htmlFor={id} className="p-2 text-[15px]">{label}</label>
@@ -23,6 +23,8 @@ export default function Input({label, name, id, type, placeholder}) {
         name={name}
         id={id}
         placeholder={placeholder}
+        onChange={onChange}
+        value={value}
         className="text-[15px] border-2 border-[#6C6C6C] rounded-[11px] bg-white h-[25px] px-2.5"
       />
     </section>
