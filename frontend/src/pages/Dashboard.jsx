@@ -9,16 +9,18 @@ import GraficoLinha from '../components/GraficoLinha';
 import {GetSumDespesas, GetSumMetas, GetSumReceitas, GetDashboardData} from "../services/DashBoardService";
 
 export default function Dashboard() {
+    const [loading, setLoading] = useState(false);
+    const [loadingGraph, setLoadingGraph] = useState(false);
+
     const [dataInicio,setDataInicio] = useState(null);
     const [dataFim,setDataFim] = useState(null);
     const [sumReceita, setSumReceita] = useState(0);
     const [sumDespesa, setSumDespesa] = useState(0);
     const [sumMeta, setSumMeta] = useState(0);
+    const [dadosDashboard,setDadosDashboard] = useState(null);
 
     const [receitaAtiva, setReceitaAtiva] = useState(true);
     const [despesaAtiva, setDespesaAtiva] = useState(true);
-
-    const [dadosDashboard,setDadosDashboard] = useState(null);
 
     const clickButtonDespesa = () => setDespesaAtiva(!despesaAtiva);
     const clickButtonReceita = () => setReceitaAtiva(!receitaAtiva);
@@ -29,6 +31,7 @@ export default function Dashboard() {
     const corDespesa = despesaAtiva ? "#FCAA67" : "rgba(252,170,103,0.5)";
 
     useEffect(()=>{
+        setLoading(true);
         const disparar = async () => {
             const somaDasReceitas = await GetSumReceitas(dataInicio, dataFim);
             const somaDasDespesas = await GetSumDespesas(dataInicio, dataFim);
@@ -37,21 +40,31 @@ export default function Dashboard() {
             setSumDespesa(somaDasDespesas);
             setSumReceita(somaDasReceitas);
             setSumMeta(somaDasMetas);
+            setLoading(false);
         }
         disparar() 
     },[dataInicio, dataFim])
 
     useEffect(()=>{
+        setLoadingGraph(true);
         const disparar = async () => {
             const dados = await GetDashboardData({ DataInicio: dataInicio, DataFim: dataFim, receitaAtiva, despesaAtiva });
             setDadosDashboard(dados);
+            setLoadingGraph(false);
         }
         disparar() 
     },[dataInicio, dataFim,receitaAtiva, despesaAtiva])
 
     return (
         <>
-            <p>Mês atual por padrão</p>
+        {loading ? (
+            <section>
+                <p>Carregando dados...</p>
+            </section>
+        ) : (
+            <section>
+                <p>Mês atual por padrão</p>
+            </section>
             <section>
                 <Input name={"DataInicio"} id={"DataInicio"} type={"date"} placeholder={"Início"} onChange={changeInicio} value={dataInicio ?? ""}/>
                 <Input name={"DataFim"} id={"DataFim"} type={"date"} placeholder={"Fim"} onChange={changeFim} value={dataFim ?? ""}/>
@@ -76,12 +89,17 @@ export default function Dashboard() {
                 <section>
                     <p>Sem dados para Demonstrar</p>
                 </section>
+            ) : loadingGraph ?(
+                <section>
+                    <p>Carregando dados...</p>
+                </section>
             ) : (
                 <section>
                     {dadosDashboard.grafico?.pizza && (<GraficoPizza labels={dadosDashboard.grafico.pizza.labels} datasets={dadosDashboard.grafico.pizza.datasets} />)}
                     {dadosDashboard.grafico?.linha && (<GraficoLinha labels={dadosDashboard.grafico.linha.labels} datasets={dadosDashboard.grafico.linha.datasets} />)}
                 </section>
             )}
+        )}
         </>
     );
 }
