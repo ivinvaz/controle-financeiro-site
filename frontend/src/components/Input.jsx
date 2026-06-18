@@ -23,7 +23,7 @@ export default function Input({label, name, id, type, placeholder}) {
         name={name}
         id={id}
         placeholder={placeholder}
-        className="text-[15px] border-2 border-[#6C6C6C] rounded-[11px] bg-white h-[25px] px-2.5"
+        className="text-[15px] border-2 border-[#6C6C6C] rounded-[11px] bg-white h-[40px] px-2.5"
       />
     </section>
   );

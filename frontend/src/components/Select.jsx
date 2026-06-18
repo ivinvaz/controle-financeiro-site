@@ -21,7 +21,7 @@ export default function Select({label, name, id, options, placeholder}){
       <select 
         name={name} 
         id={id} 
-        className="text-[15px] border-2 border-[#6C6C6C] rounded-[11px] bg-white h-[30px] px-2.5"
+        className="text-[15px] border-2 border-[#6C6C6C] rounded-[11px] bg-white h-[40px] px-2.5"
       >
         <option disabled selected hidden>{placeholder}</option>
         {options.map((item, index)=>(

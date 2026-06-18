@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
       host: true, // Garante que o --host funcione
       proxy: {
         "/api": {
-          target: env.VITE_BACKEND_URL || "http://localhost:5175",
+          target: env.VITE_BACKEND_URL || "http://localhost:8000",
           changeOrigin: true,
         },
       },
