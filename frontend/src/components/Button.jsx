@@ -15,7 +15,7 @@
  */
 export default function Button({ label, name, id, grande, fontcolor, bgColor, disabled = false, onClick }) {
   return (
-    <section className="flex flex-col m-2">
+    <section className={`flex flex-col m-2 ${grande ? "" : "flex-1 max-w-[10rem]"}`}>
       <button
         type="submit"
         name={name}

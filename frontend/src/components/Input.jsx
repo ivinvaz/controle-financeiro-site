@@ -16,7 +16,7 @@
  */
 export default function Input({label, name, id, type, placeholder, onChange, value}) {
   return (
-    <section className="flex flex-col m-2">
+    <section className={`flex flex-col m-2 ${type === "date" ? "flex-1 max-w-[17rem]" : ""}`}>
       <label htmlFor={id} className="p-2 text-[15px]">{label}</label>
       <input
         type={type}
