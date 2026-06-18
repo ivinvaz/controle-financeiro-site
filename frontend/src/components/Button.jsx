@@ -26,7 +26,7 @@ export default function Button({
   tipo = "button",
 }) {
   return (
-    <section className="flex flex-col m-2">
+    <section className={`flex flex-col m-2 ${grande ? "" : "flex-1 max-w-[10rem]"}`}>
       <button
         type={tipo}
         name={name}
