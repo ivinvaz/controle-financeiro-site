@@ -81,8 +81,8 @@ export default function Dashboard() {
 
                 <section class="flex m-2 flex-1 sm:hidden">
                     <section className="flex flex-1 justify-between p-2 px-7 rounded-xl font-bold shadow-md bg-black text-white">
-                        <p>{label}</p>
-                        <p>{value}</p>
+                        <p>Em Banco: </p>
+                        <p>{`R$${sumReceita-sumDespesa}`}</p>
                     </section>
                 </section>
 
