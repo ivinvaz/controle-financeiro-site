@@ -63,7 +63,7 @@ export default function Dashboard() {
             </section>
         ) : (
             <>
-                <section className="flex h-fit justify-center md:justify-start">
+                <section className="flex flex-1 justify-center md:justify-start">
                     <Input name={"DataInicio"} id={"DataInicio"} type={"date"} placeholder={"Início"} onChange={changeInicio} value={dataInicio ?? ""}/>
                     <Input name={"DataFim"} id={"DataFim"} type={"date"} placeholder={"Fim"} onChange={changeFim} value={dataFim ?? ""}/>
                 </section>
