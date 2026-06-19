@@ -13,7 +13,7 @@ RUN npm install
 # Copia o restante dos arquivos do projeto
 COPY . .
 
-# Expõe a porta que sua aplicação utiliza (ajuste se não for 3000)
+# Expõe a porta que sua aplicação utiliza 
 EXPOSE 8000
 
 # Comando para iniciar a aplicação em modo de desenvolvimento
