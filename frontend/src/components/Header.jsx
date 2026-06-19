@@ -18,7 +18,7 @@ function Header() {
   const { pathname } = useLocation();
 
   return (
-    <header className="flex items-start justify-start py-4">
+    <header className="flex justify-center m-4">
       <h1 className="text-xl font-bold">{getTitle(pathname)}</h1>
     </header>
   );
