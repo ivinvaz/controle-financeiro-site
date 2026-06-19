@@ -26,24 +26,8 @@ function Login() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        register('email', {
-            required: 'E-mail é obrigatório.',
-            pattern: {
-                value: emailRegex,
-                message: 'Insira um e-mail válido.',
-            },
-        });
-        register('senha', {
-            required: 'Senha é obrigatória.',
-            minLength: {
-                value: 8,
-                message: 'A senha deve ter pelo menos 8 caracteres.',
-            },
-            pattern: {
-                value: passwordPattern,
-                message: 'A senha deve ter letra maiúscula, número e caractere especial.',
-            },
-        });
+        register('email', {required: 'E-mail é obrigatório.'});
+        register('senha', {required: 'Senha é obrigatória.'});
     }, [register]);
 
     const handleFormChange = (event) => {
