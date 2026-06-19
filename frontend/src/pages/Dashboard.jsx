@@ -96,7 +96,7 @@ export default function Dashboard() {
                     <Button label={"Despesas"} name={"despesasButton"} id={"despesasButton"} grande={false} fontcolor={"black"} bgColor={corDespesa} disabled={false} onClick={clickButtonDespesa}/>
                 </section>
 
-                <section class="flex gap-2 flex-1 m-2 flex-col md:flex-row">
+                <section class="flex gap-2 flex-1 m-2 flex-col items-center justify-center sm:flex-row">
 
                     { (!dadosDashboard || dadosDashboard.semDados) ? (
                         <section>
