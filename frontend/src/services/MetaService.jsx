@@ -85,4 +85,4 @@ async function obterPorId(id) {
   }
 }
 
-export { criar, editar, deletar, listar, obterPorId };
+export default { criar, editar, deletar, listar, obterPorId };
