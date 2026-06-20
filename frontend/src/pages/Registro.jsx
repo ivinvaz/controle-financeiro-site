@@ -200,6 +200,7 @@ function Registro() {
                                 name="registrar"
                                 id="registrar"
                                 disabled={loading}
+                                tipo='form'
                                 grande
                                 bgColor="#114B5F"
                                 fontcolor="#fff"

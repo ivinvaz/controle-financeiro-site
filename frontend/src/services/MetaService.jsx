@@ -1,11 +1,4 @@
-import * as MetaApi from '../api/MetaApi';
-
-/**
- * MetaService
- * 
- * Serviço para gerenciar operações de Metas.
- * Fornece métodos para criar, editar, deletar e consultar metas.
- */
+import * as MetaApi from "../api/MetaApi";
 
 async function criar(dados) {
   try {
@@ -13,13 +6,13 @@ async function criar(dados) {
     return {
       success: true,
       data: response,
-      message: 'Meta criada com sucesso!',
+      message: "Meta criada com sucesso!",
     };
   } catch (error) {
     return {
       success: false,
       error: error.message,
-      message: error.message || 'Erro ao criar meta',
+      message: error.message || "Erro ao criar meta",
     };
   }
 }
@@ -30,13 +23,13 @@ async function editar(id, dados) {
     return {
       success: true,
       data: response,
-      message: 'Meta atualizada com sucesso!',
+      message: "Meta atualizada com sucesso!",
     };
   } catch (error) {
     return {
       success: false,
       error: error.message,
-      message: error.message || 'Erro ao editar meta',
+      message: error.message || "Erro ao editar meta",
     };
   }
 }
@@ -46,13 +39,13 @@ async function deletar(id) {
     await MetaApi.deletarMeta(id);
     return {
       success: true,
-      message: 'Meta deletada com sucesso!',
+      message: "Meta deletada com sucesso!",
     };
   } catch (error) {
     return {
       success: false,
       error: error.message,
-      message: error.message || 'Erro ao deletar meta',
+      message: error.message || "Erro ao deletar meta",
     };
   }
 }
@@ -63,14 +56,14 @@ async function listar() {
     return {
       success: true,
       data: response?.data || response || [],
-      message: 'Metas carregadas com sucesso!',
+      message: "Metas carregadas com sucesso!",
     };
   } catch (error) {
     return {
       success: false,
       error: error.message,
       data: [],
-      message: error.message || 'Erro ao carregar metas',
+      message: error.message || "Erro ao carregar metas",
     };
   }
 }
@@ -81,16 +74,15 @@ async function obterPorId(id) {
     return {
       success: true,
       data: response,
-      message: 'Meta carregada com sucesso!',
+      message: "Meta carregada com sucesso!",
     };
   } catch (error) {
     return {
       success: false,
       error: error.message,
-      message: error.message || 'Erro ao carregar meta',
+      message: error.message || "Erro ao carregar meta",
     };
   }
 }
 
-
-export { criar, editar, deletar, listar, obterPorId };
+export default { criar, editar, deletar, listar, obterPorId };
