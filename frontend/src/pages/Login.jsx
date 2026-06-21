@@ -56,39 +56,6 @@ function Login() {
 
     return (
         <main className="min-h-screen flex bg-white">
-            <aside className="hidden lg:flex lg:w-[35%] xl:w-[36%] flex-col justify-center gap-14 bg-[#0d4a4a] px-10 xl:px-14 py-12 text-center">
-                <header className="flex flex-col gap-6">
-                    <p className="text-lg font-bold leading-snug text-white">
-                        Acompanhe receitas, despesas e metas em um<br />
-                        só lugar, com clareza e eficiência.
-                    </p>
-                </header>
-
-                <ul className="flex flex-col gap-8 text-center">
-                    <li className="flex items-center justify-center gap-2 text-white/90 text-base leading-snug">
-                        <span className="text-white"><Eye /></span>
-                        <p><strong className="text-white">Visão clara:</strong> saldo atualizado e evolução mensal.</p>
-                    </li>
-                    <li className="flex items-center justify-center gap-2 text-white/90 text-base leading-snug">
-                        <span className="text-white"><Settings /></span>
-                        <p><strong className="text-white">Controle total:</strong> registre e acompanhe todas as transações.</p>
-                    </li>
-                    <li className="flex items-center justify-center gap-2 text-white/90 text-base leading-snug">
-                        <span className="text-white"><Flag /></span>
-                        <p><strong className="text-white">Metas financeiras:</strong> defina objetivos e veja seu progresso.</p>
-                    </li>
-                    <li className="flex items-center justify-center gap-2 text-white/90 text-base leading-snug">
-                        <span className="text-white"><ChartArea /></span>
-                        <p><strong className="text-white">Relatórios inteligentes:</strong> gráficos e insights.</p>
-                    </li>
-                </ul>
-
-                <footer className="text-center text-base text-white/80 font-medium leading-relaxed">
-                    <p className="text-white font-bold text-lg mb-2">Entre agora</p>
-                    <p className="font-bold text-white text-lg">e comece a transformar sua vida financeira!</p>
-                </footer>
-            </aside>
-
             <section className="flex flex-1 items-center justify-center bg-white px-4 py-12 sm:px-8">
                 <div className="w-full max-w-[380px]">
                     <Conteiner>

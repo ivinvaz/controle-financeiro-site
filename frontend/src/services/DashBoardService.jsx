@@ -1,5 +1,8 @@
-import listar from "./MetaService";
-import consultarTransacoes  from "./TransacaoService";
+import metaService from "./MetaService";
+import transacaoServices from "./TransacaoService";
+
+const { consultarTodos } = transacaoServices;
+const { listar } = metaService;
 
 function SomarValores(lista, campoValor = "valor") {
   return lista.reduce((soma, item) => {
@@ -43,7 +46,9 @@ function GetCor(indice) {
 }
 
 async function GetTransacoesDate(DataInicio = null, DataFim = null) {
-  const transacoes = (await consultarTransacoes()) ?? [];
+  const resposta = await consultarTodos();  
+  const transacoes = resposta?.data || (Array.isArray(resposta) ? resposta : []);
+
   if (transacoes.length === 0) return [];
   let transacoesFiltradas = null;
 
@@ -81,7 +86,9 @@ async function GetTransacoesDate(DataInicio = null, DataFim = null) {
 }
 
 async function GetMetasDate(DataInicio = null, DataFim = null) {
-  const metas = (await listar()) ?? [];
+  const resposta = await listar();
+  const metas = resposta?.data?.metas || [];
+
   if (metas.length === 0) return [];
   let metasFiltradas = null;
 
