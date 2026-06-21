@@ -145,6 +145,7 @@ function Login() {
                                 grande
                                 bgColor="#114B5F"
                                 fontcolor="#fff"
+                                tipo='form'
                             />
 
                             <p className="text-center text-sm text-[#4a6a6a] mt-1">
