@@ -69,7 +69,7 @@ function CadastroMeta() {
   };
 
   return (
-    <div className="flex flex-1 min-h-screen sm:bg-slate-50 items-start sm:items-center justify-center p-4">
+    <div className="flex flex-1 min-h-screen items-start sm:items-center justify-center p-4">
       <div className="flex flex-col w-full sm:w-[420px] lg:w-[400px] sm:border sm:border-[#114B5F] sm:rounded-2xl sm:p-6 sm:bg-white sm:shadow-md">
         <h2 className="text-center font-semibold text-lg mb-4">Nova Meta</h2>
 
@@ -85,12 +85,11 @@ function CadastroMeta() {
           onChange={handleChange}
         />
         
-        {/* 🔴 CORREÇÃO AQUI: Ajustado para usar a nova estrutura de meses */}
         <Select
           label="Mês"
           name="mes"
           id="mes"
-          options={LISTA_MESES.map(m => m.label)} // Se o seu componente Select só aceita array de strings
+          options={LISTA_MESES.map(m => m.label)}
           placeholder="Selecione"
           value={LISTA_MESES.find(m => m.value === form.mes)?.label || ""} 
           onChange={(e) => {

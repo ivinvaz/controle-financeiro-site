@@ -52,7 +52,7 @@ function ListagemMeta() {
       const resultado = await MetaService.listar();
 
       if (resultado.success) {
-        const listaFormatada = resultado?.data?.metas || [];
+        const listaFormatada = (resultado?.data?.metas || []).map(mapearParaListagem);
         setMetas(listaFormatada);
       } else {
         setErro(resultado.message || "Erro ao carregar metas.");

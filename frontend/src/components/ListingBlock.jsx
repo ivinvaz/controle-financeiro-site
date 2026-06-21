@@ -28,21 +28,29 @@
  */
 
 import { useNavigate } from "react-router"
+import React from "react";
 
 export default function ListingBlock({options,type}){
     const navigate = useNavigate();
 
     const AbrirDrop = (e) => {
-        const targetId = e.target.id;
+        const targetId = e.target.id.replace("-button", "");
         const targetDropId = `${targetId}-drop`;
         const dropCampo = document.getElementById(targetDropId);
-      
+
         if (dropCampo) {
-          if (dropCampo.classList.contains("hidden")) {
+        if (dropCampo.classList.contains("hidden")) {
             dropCampo.classList.remove("hidden");
-          } else {
+        } else {
             dropCampo.classList.add("hidden");
-          }
+        }
+        }
+
+        const buttonCampo = document.getElementById(`${targetId}-button`)
+
+        if(buttonCampo) {
+            if(buttonCampo.textContent == "⌃") buttonCampo.textContent = "⌄"
+            if(buttonCampo.textContent == "⌄") buttonCampo.textContent = "⌃"
         }
     };
 
@@ -66,7 +74,7 @@ export default function ListingBlock({options,type}){
     return(
         <section className="flex flex-col h-screen md:max-h-[50vh] md:m-2">
             <article className="bg-[#114B5F] w-[130px] p-2 justify-center items-center ml-auto rounded-2xl rounded-b-none hidden md:flex">
-                <button className="text-[15px] text-white" onClick={CriarNovo}>Adicionar</button>
+                <button className="cursor-pointer text-[15px] text-white" onClick={CriarNovo}>Adicionar</button>
             </article>
             <div className="flex-1 flex flex-col md:shadow-md md:rounded-2xl overflow-hidden md:rounded-tr-none">
                 <table className="w-full text-left border-collapse">
@@ -82,17 +90,17 @@ export default function ListingBlock({options,type}){
                 <div className="flex-1 overflow-y-auto px-2">
                 <table className="w-full text-left">
                     <tbody>
-                    <tr className="bg-white"><td className="p-2"></td></tr>
+                    <tr className="bg-white" key="linha-espacamento-topo"><td className="p-2"></td></tr>
                     {options.map((item)=>(
-                        <>
-                            <tr className={`bg-[${item.tipo == "meta" ? "#B4C5E4" : item.tipo == "receita" ? "#6CAE75" : "#FCAA67"}] font-bold rounded-2xl`} id={item.id}>
+                        <React.Fragment key={item.id}>
+                            <tr className={`${item.tipo == "meta" ? "bg-[#B4C5E4]" : item.tipo == "receita" ? "bg-[#6CAE75]" : "bg-[#FCAA67]"} font-bold rounded-2xl`} id={item.id}>
                                 <td className="px-4 py-2">{item.nome}</td>
                                 {type =="transacoes" && <td className="px-4 py-2 hidden md:table-cell">{item.natureza}</td>}
                                 <td className="px-4 py-2 hidden md:table-cell">{item.valor}</td>
-                                <td className="py-2 md:table-cell"><button id={item.id} onClick={AbrirDrop}>-</button></td>
+                                <td className="py-2 md:table-cell"><button id={`${item.id}-button`} onClick={AbrirDrop} className="cursor-pointer">⌄</button></td>
                             </tr>
                             <tr className="m-2 hidden" id={`${item.id}-drop`}>
-                                <td colspan="4" className={`rounded-2xl rounded-t-none bg-[${item.tipo == "meta" ? "#B4C5E4" : item.tipo == "receita" ? "#6CAE75" : "#FCAA67"}]`}>
+                                <td colspan="4" className={`rounded-2xl rounded-t-none ${item.tipo == "meta" ? "bg-[#B4C5E4]" : item.tipo == "receita" ? "bg-[#6CAE75]" : "bg-[#FCAA67]"}`}>
                                 <div className="flex flex-col gap-2 mx-4 my-2 ">
                                     <p className="text-sm md:hidden">Valor(R$): {item.valor}</p>
                                     {type =="transacoes" && <p className="text-sm md:hidden">Natureza: {item.natureza}</p>}
@@ -101,12 +109,12 @@ export default function ListingBlock({options,type}){
                                     <p className="text-sm">Descrição: {item.descricao}</p>
                                 </div>
                                 <article className="bg-[#EEE5E9] p-2 justify-center items-center rounded-2xl rounded-t-none flex" >
-                                    <button className="text-[15px] font-bold" id={item.id} onClick={EditarItem}>Editar</button>
+                                    <button className="cursor-pointer text-[15px] font-bold" id={item.id} onClick={EditarItem}>Editar</button>
                                 </article>
                                 </td>
                             </tr>
                             <tr id={`${item.id}-blank`} className="bg-white"><td className="p-2"></td></tr>
-                        </>
+                        </React.Fragment>
                     ))}
 
                     </tbody>
