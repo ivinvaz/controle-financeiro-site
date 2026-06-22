@@ -28,10 +28,31 @@
  */
 
 import { useNavigate } from "react-router"
-import React from "react";
+import React,{ useEffect, useState } from "react";
+import CategoriaService from "../services/CategoriaService";
 
 export default function ListingBlock({options,type}){
     const navigate = useNavigate();
+    const [categorias, setCategorias] = useState([]);
+
+    useEffect(() => {
+        if (type === "transacoes") { 
+            const buscarCategorias = async () => {
+                const resultado = await CategoriaService.listar(); // Assumindo que você tem um método listar()
+                if (resultado.success) {
+                    setCategorias(resultado.data);
+                }
+            };
+            buscarCategorias();
+        }
+    }, [type]);
+
+    const obterNomeCategoria = (categoriaId) => {
+        if (!categorias || categorias.length === 0) return "Carregando...";
+        
+        const encontrada = categorias.find(cat => cat.id === categoriaId || cat._id === categoriaId);
+        return encontrada ? encontrada.nome : "Sem categoria";
+    };
 
     const AbrirDrop = (e) => {
         const targetId = e.target.id.replace("-button", "");
@@ -99,11 +120,11 @@ export default function ListingBlock({options,type}){
                                 <td className="py-2 md:table-cell"><button id={`${item.id}-button`} onClick={AbrirDrop} className="cursor-pointer">⌄</button></td>
                             </tr>
                             <tr className="m-2 hidden" id={`${item.id}-drop`}>
-                                <td colspan="4" className={`rounded-2xl rounded-t-none ${item.natureza == "meta" ? "bg-[#B4C5E4]" : item.natureza == "receita" ? "bg-[#6CAE75]" : "bg-[#FCAA67]"}`}>
+                                <td colSpan="4" className={`rounded-2xl rounded-t-none ${item.natureza == "meta" ? "bg-[#B4C5E4]" : item.natureza == "receita" ? "bg-[#6CAE75]" : "bg-[#FCAA67]"}`}>
                                 <div className="flex flex-col gap-2 mx-4 my-2 ">
                                     <p className="text-sm md:hidden">Valor(R$): {item.valor}</p>
                                     {type =="transacoes" && <p className="text-sm md:hidden">Natureza: {item.natureza}</p>}
-                                    {type =="transacoes" && <p className="text-sm">Categoria: {item.categoria}</p>}
+                                    {type === "transacoes" && <p className="text-sm">Categoria: {obterNomeCategoria(item.categoria)}</p>}
                                     {type =="transacoes" && <p className="text-sm">Descrição: {item.descricao}</p>}
                                     {type !="transacoes" && <p className="text-sm">Data: {item.categoria}</p>}
                                 </div>
@@ -121,9 +142,9 @@ export default function ListingBlock({options,type}){
                 </div>
             </div>
 
-            <article className="flex flex-col m-2 md:hidden">
-                <button className="bg-[#114B5F] text-white rounded-[15px] h-[35px] text-[15px]" onClick={CriarNovo}>
-                Adicionar
+            <article className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 md:hidden z-40 shadow-md">
+                <button className="w-full bg-[#114B5F] text-white rounded-[15px] h-[44px] text-[15px] font-medium cursor-pointer" onClick={CriarNovo}>
+                    Adicionar
                 </button>
             </article>
         </section>
