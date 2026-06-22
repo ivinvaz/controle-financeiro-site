@@ -108,7 +108,7 @@ function EdicaoMeta() {
 
     const resultado = await MetaService.editar(id, {
       ...data,
-      valor: Number(data.valor),
+      meta: Number(data.valor),
     });
 
     setLoading(false);
@@ -153,7 +153,7 @@ function EdicaoMeta() {
             className="flex flex-1 flex-col gap-2"
           >
             <h1 className="text-xl font-bold text-[#114B5F] text-center mb-4">
-              Nova Meta
+              Editar Meta
             </h1>
 
             <fieldset className="flex flex-1 flex-col gap-2 border-0 p-0 m-0">
@@ -232,10 +232,10 @@ function EdicaoMeta() {
             <div className="flex flex-col sm:flex-row sm:mt-2">
               <div className="sm:w-fit">
                 <Button
-                  label={loading ? "Salvando..." : "Criar"}
-                  name="salvar"
+                  label={loading ? "Editando..." : "Editar"}
+                  name="editar"
                   id="salvar"
-                  type="submit"
+                  tipo="submit"
                   disabled={loading}
                   grande
                   bgColor="#114B5F"
@@ -248,7 +248,7 @@ function EdicaoMeta() {
                   label="Cancelar"
                   name="cancelar"
                   id="cancelar"
-                  type="button"
+                  tipo="button"
                   grande
                   bgColor="#EEE5E9"
                   fontcolor="#114B5F"
@@ -261,7 +261,7 @@ function EdicaoMeta() {
                   label="Remover"
                   name="remover"
                   id="remover"
-                  type="button"
+                  tipo="button"
                   disabled={loading}
                   grande
                   bgColor="#E05C34"

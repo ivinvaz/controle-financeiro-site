@@ -48,9 +48,8 @@ export default function ListingBlock({options,type}){
 
         const buttonCampo = document.getElementById(`${targetId}-button`)
 
-        if(buttonCampo) {
-            if(buttonCampo.textContent == "⌃") buttonCampo.textContent = "⌄"
-            if(buttonCampo.textContent == "⌄") buttonCampo.textContent = "⌃"
+        if (buttonCampo) {
+            buttonCampo.textContent = buttonCampo.textContent === "⌄" ? "⌃" : "⌄";
         }
     };
 
@@ -65,9 +64,9 @@ export default function ListingBlock({options,type}){
     const EditarItem = (e) => {
         const targetId = e.target.id
         if(type == "transacoes"){
-            navigate(`transacoes/${targetId}/editar`)
+            navigate(`/transacoes/${targetId}/editar`)
         }else{
-            navigate(`metas/${targetId}/editar`)
+            navigate(`/metas/${targetId}/editar`)
         }
     }
 
@@ -104,9 +103,10 @@ export default function ListingBlock({options,type}){
                                 <div className="flex flex-col gap-2 mx-4 my-2 ">
                                     <p className="text-sm md:hidden">Valor(R$): {item.valor}</p>
                                     {type =="transacoes" && <p className="text-sm md:hidden">Natureza: {item.natureza}</p>}
-                                    <p className="text-sm">Tipo: {item.tipo}</p>
-                                    <p className="text-sm">Categoria: {item.categoria}</p>
-                                    <p className="text-sm">Descrição: {item.descricao}</p>
+                                    {type =="transacoes" && <p className="text-sm">Tipo: {item.tipo}</p>}
+                                    {type =="transacoes" && <p className="text-sm">Categoria: {item.categoria}</p>}
+                                    {type =="transacoes" && <p className="text-sm">Descrição: {item.descricao}</p>}
+                                    {type !="transacoes" && <p className="text-sm">Data: {item.categoria}</p>}
                                 </div>
                                 <article className="bg-[#EEE5E9] p-2 justify-center items-center rounded-2xl rounded-t-none flex" >
                                     <button className="cursor-pointer text-[15px] font-bold" id={item.id} onClick={EditarItem}>Editar</button>

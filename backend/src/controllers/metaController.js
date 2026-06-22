@@ -2,7 +2,7 @@ const Meta = require('../models/Meta');
 const Usuario = require('../models/Usuario');
 
 async function createMeta(req, res) {
-    const { meta, mes, ano } = req.body;
+    const { meta, mes, ano, nome } = req.body;
     const usuarioId = req.user.id;
     try {
         const usuario = await Usuario.findById(usuarioId);
@@ -15,11 +15,11 @@ async function createMeta(req, res) {
         if (mes < 1 || mes > 12) {
             return res.status(400).json({ message: 'O mês deve ser um valor entre 1 e 12.' });
         }
-        const metaExistente = await Meta.findOne({ Usuario: usuarioId, mes, ano });
+        const metaExistente = await Meta.findOne({ Usuario: usuarioId, mes, ano, nome });
         if (metaExistente) {
             return res.status(409).json({ message: 'Já existe uma meta para este mês e ano.' });
         }
-        const novaMeta = await Meta.create({ Usuario: usuarioId, meta, mes, ano });
+        const novaMeta = await Meta.create({ Usuario: usuarioId, meta, mes, ano, nome });
         return res.status(201).json({ message: 'Meta criada com sucesso.', meta: novaMeta });
     } catch (error) {
         console.error('Erro ao criar meta:', error);
@@ -55,7 +55,7 @@ async function getMetaById(req, res) {
 
 async function updateMeta(req, res) {
     const { id } = req.params;
-    const { meta, mes, ano } = req.body;
+    const { meta, mes, ano, nome } = req.body;
     const usuarioId = req.user.id;
     try {
         const metaExistente = await Meta.findOne({ _id: id, Usuario: usuarioId });
@@ -77,7 +77,7 @@ async function updateMeta(req, res) {
                 return res.status(400).json({ message: 'O ano deve ser um valor positivo.' });
             }
         }
-        const metaAtualizada = await Meta.findByIdAndUpdate(id, { meta, mes, ano }, { new: true });
+        const metaAtualizada = await Meta.findByIdAndUpdate(id, { meta, mes, ano, nome }, { new: true });
         return res.status(200).json({ message: 'Meta atualizada com sucesso.', meta: metaAtualizada });
     } catch (error) {
         console.error('Erro ao atualizar meta:', error);
