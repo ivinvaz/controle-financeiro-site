@@ -70,7 +70,7 @@ function EdicaoTransacao() {
           "dataRealizacao",
           transacao.dataRealizacao ? transacao.dataRealizacao.substring(0, 10) : ""
         );
-        const valorCategoria = transacao.categoria || transacao.categoria?.id || transacao.categoria || "";
+        const valorCategoria = transacao.Categoria || "";
         setValue("categoria", valorCategoria);
       } catch (error) {
         setSubmitError(error.message || "Erro ao carregar transação.");
@@ -86,7 +86,11 @@ function EdicaoTransacao() {
     const { name, value } = event.target;
     if (!name) return;
 
-    setValue(name, value, {
+    const parsedValue = (name === "categoria" && value !== "") && !isNaN(value) 
+    ? Number(value) 
+    : value;
+
+    setValue(name, parsedValue, {
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
@@ -102,6 +106,7 @@ function EdicaoTransacao() {
       await transacaoServices.editar(id, {
         ...data,
         valor: Number(data.valor),
+        categoriaId: data.categoria
       });
 
       setSubmitSuccess("Transação atualizada com sucesso.");
@@ -129,10 +134,6 @@ function EdicaoTransacao() {
     }
   };
 
-  if (carregandoTransacao) {
-    return <p className="m-2 text-slate-600">Carregando transação...</p>;
-  }
-
   useEffect(()=>{
     const disparar = async () => {
       const resultado = await CategoriaService.listar();
@@ -144,6 +145,10 @@ function EdicaoTransacao() {
     }
     disparar();
   },[])
+
+  if (carregandoTransacao) {
+    return <p className="m-2 text-slate-600">Carregando transação...</p>;
+  }
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-white px-4 py-10 sm:px-8">

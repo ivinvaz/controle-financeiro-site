@@ -42,7 +42,7 @@ export default function Select({
         </option>
         {options.map((item, index) => {
           const isObject = typeof item === "object" && item !== null;
-          const optionValue = isObject ? item.id : item;
+          const optionValue = isObject ? (item.id || item._id) : item;
           const optionLabel = isObject ? item.nome : item;
 
           return (

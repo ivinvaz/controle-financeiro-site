@@ -65,7 +65,7 @@ async function consultarCategoriaPorId(id) {
   return request(`/categoria/consultar/${id}`, { method: "GET" });
 }
 
-export {
+export default {
   BASE_URL,
   request,
   criarCategoria,

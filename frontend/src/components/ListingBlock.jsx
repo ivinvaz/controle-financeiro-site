@@ -38,7 +38,7 @@ export default function ListingBlock({options,type}){
     useEffect(() => {
         if (type === "transacoes") { 
             const buscarCategorias = async () => {
-                const resultado = await CategoriaService.listar(); // Assumindo que você tem um método listar()
+                const resultado = await CategoriaService.listar(); 
                 if (resultado.success) {
                     setCategorias(resultado.data);
                 }
@@ -104,6 +104,7 @@ export default function ListingBlock({options,type}){
                     <th className="px-4 py-2 font-normal hidden md:table-cell">Nome</th>
                     {type =="transacoes" && <th className="px-4 py-2 font-normal hidden md:table-cell">Natureza</th>}
                     <th className="px-4 py-2 font-normal hidden md:table-cell">Valor(R$)</th>
+                    {type !="transacoes" && <th className="px-4 py-2 font-normal hidden md:table-cell">Data</th>}
                     </tr>
                 </thead>
                 </table>
@@ -113,20 +114,20 @@ export default function ListingBlock({options,type}){
                     <tr className="bg-white" key="linha-espacamento-topo"><td className="p-2"></td></tr>
                     {options.map((item)=>(
                         <React.Fragment key={item.id}>
-                            <tr className={`${item.natureza == "meta" ? "bg-[#B4C5E4]" : item.natureza == "receita" ? "bg-[#6CAE75]" : "bg-[#FCAA67]"} font-bold rounded-2xl`} id={item.id}>
+                            <tr className={`${item.natureza == "despesa" ? "bg-[#FCAA67]" : item.natureza == "receita" ? "bg-[#6CAE75]" : "bg-[#B4C5E4]"} font-bold rounded-2xl`} id={item.id}>
                                 <td className="px-4 py-2">{item.nome}</td>
                                 {type =="transacoes" && <td className="px-4 py-2 hidden md:table-cell">{item.natureza}</td>}
                                 <td className="px-4 py-2 hidden md:table-cell">{item.valor}</td>
+                                {type !="transacoes" && <td className="px-4 py-2 hidden md:table-cell">{item.categoria}</td>}
                                 <td className="py-2 md:table-cell"><button id={`${item.id}-button`} onClick={AbrirDrop} className="cursor-pointer">⌄</button></td>
                             </tr>
                             <tr className="m-2 hidden" id={`${item.id}-drop`}>
-                                <td colSpan="4" className={`rounded-2xl rounded-t-none ${item.natureza == "meta" ? "bg-[#B4C5E4]" : item.natureza == "receita" ? "bg-[#6CAE75]" : "bg-[#FCAA67]"}`}>
+                                <td colSpan="4" className={`rounded-2xl rounded-t-none ${item.natureza == "despesa" ? "bg-[#FCAA67]" : item.natureza == "receita" ? "bg-[#6CAE75]" : "bg-[#B4C5E4]"}`}>
                                 <div className="flex flex-col gap-2 mx-4 my-2 ">
                                     <p className="text-sm md:hidden">Valor(R$): {item.valor}</p>
                                     {type =="transacoes" && <p className="text-sm md:hidden">Natureza: {item.natureza}</p>}
                                     {type === "transacoes" && <p className="text-sm">Categoria: {obterNomeCategoria(item.categoria)}</p>}
                                     {type =="transacoes" && <p className="text-sm">Descrição: {item.descricao}</p>}
-                                    {type !="transacoes" && <p className="text-sm">Data: {item.categoria}</p>}
                                 </div>
                                 <article className="bg-[#EEE5E9] p-2 justify-center items-center rounded-2xl rounded-t-none flex" >
                                     <button className="cursor-pointer text-[15px] font-bold" id={item.id} onClick={EditarItem}>Editar</button>

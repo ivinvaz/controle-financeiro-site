@@ -56,7 +56,11 @@ function CadastroTransacao() {
     const { name, value } = event.target;
     if (!name) return;
 
-    setValue(name, value, {
+    const parsedValue = (name === "categoria" && value !== "") && !isNaN(value) 
+    ? Number(value) 
+    : value;
+
+    setValue(name, parsedValue, {
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
@@ -72,6 +76,7 @@ function CadastroTransacao() {
       await transacaoServices.criar({
         ...data,
         valor: Number(data.valor),
+        categoriaId: data.categoria
       });
 
       setSubmitSuccess("Transação cadastrada com sucesso.");
