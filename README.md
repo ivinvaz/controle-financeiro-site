@@ -71,6 +71,8 @@ cp .env.example .env
 Abra o arquivo `.env` e ajuste os valores indicados entre `<>`:
 
 ```env
+# Para uma inicialização facilitada, mude apenas os itens listados entre <>
+
 # Nome do usuário ROOT do banco de dados
 MONGO_INITDB_ROOT_USERNAME=<username>
 
@@ -78,27 +80,35 @@ MONGO_INITDB_ROOT_USERNAME=<username>
 MONGO_INITDB_ROOT_PASSWORD=<password>
 
 # URL para conexão do banco de dados
-# Substitua <username>, <password> e <nome_do_seu_banco> pelos valores escolhidos acima
 DATABASE_URL=mongodb://<username>:<password>@db:27017/<nome_do_seu_banco>?authSource=admin
 
-# Segredo utilizado para validar conexões com o JWT
+# Segredo que será utilizado para validar conexões com o JWT
 # Recomenda-se gerar um valor aleatório e seguro, por exemplo com:
 # node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 JWT_SECRET=<your_jwt_secret_key>
 
-# Porta em que o backend será exposto
+# Porta em que o backend será exposta
 PORT=8000
 
-# URL do backend usada pelo proxy do Vite em desenvolvimento
-# Deve apontar para o nome do serviço backend dentro da rede do Docker Compose
-VITE_BACKEND_URL=http://backend:8000
+# URL do backend usada pelo proxy do Vite em desenvolvimento.
+# Deve apontar para a porta onde o backend Express esta rodando localmente.
+VITE_BACKEND_URL=http://localhost:8000
 
-# Base URL usada pelas chamadas Axios no frontend
-# Em desenvolvimento, mantenha "/api" para usar o proxy configurado no vite.config.js
+# Base URL usada pelas chamadas Axios no frontend.
+# Em desenvolvimento, mantenha "/api" para usar o proxy configurado no vite.config.js.
 VITE_API_BASE_URL=/api
+
+# Tipos de transação da aplicação, separe por ","
+# Não altere este campo
+TIPOS_DE_TRANSACAO=receita,despesa
+
+# Categorias de transação da aplicação, separe por ","
+CATEGORIAS_DE_TRANSACAO=Salário, Freelance / Projetos, Investimentos, Outros, Moradia, Contas Residenciais, Alimentação, Saúde, Transporte, Educação, Delivery e Restaurantes, Lazer e Entretenimento, Assinaturas e Serviços, Compras e Vestuário, Cuidados Pessoais, Presentes e Doações, Reserva de Emergência, Ações / Fundos, Previdência / Longo Prazo, Tarifas Bancárias, Empréstimos e Parcelas, Imprevistos
 ```
 
 > **Observação:** o nome do banco de dados (`<nome_do_seu_banco>`) pode ser qualquer valor de sua escolha. O MongoDB cria o banco automaticamente na primeira escrita de dados, não havendo necessidade de criá-lo manualmente.
+>
+> **Categorias e tipos de transação:** as categorias listadas em `CATEGORIAS_DE_TRANSACAO` (e os tipos em `TIPOS_DE_TRANSACAO`) são criadas automaticamente no banco de dados na primeira execução da aplicação, caso ainda não existam. Para adicionar uma nova categoria, basta incluí-la na lista (separada por vírgula) e reiniciar os containers — categorias já existentes não são duplicadas nem alteradas.
 
 ### 4. Construir e iniciar os containers
 
