@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mongo:8
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./.env
+    volumes:
+      - mongo-data:/data/db
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-node
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    env_file:
+      - ./.env
+    restart: on-failure
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-node
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./.env
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    restart: on-failure
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:

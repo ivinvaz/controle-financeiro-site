@@ -1,0 +1,43 @@
+{
+  "name": "controle-financeiro-site",
+  "version": "1.0.0",
+  "description": "Aplicação web de controle financeiro desenvolvida com React, focada no gerenciamento de receitas, despesas e metas financeiras.",
+  "main": "app.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest --watchAll",
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+    ,"docker:build": "docker build -t controle-financeiro-backend .",
+    "docker:run": "docker run --rm -p 8000:8000 controle-financeiro-backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivinvaz/controle-financeiro-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivinvaz/controle-financeiro-site/issues"
+  },
+  "homepage": "https://github.com/ivinvaz/controle-financeiro-site#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^17.2.3",
+    "express": "~4.16.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.1",
+    "morgan": "~1.9.1",
+    "swagger-ui-express": "^5.0.1",
+    "yaml": "^2.8.1",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "jest": "^30.4.1",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.2.2"
+  }
+}
