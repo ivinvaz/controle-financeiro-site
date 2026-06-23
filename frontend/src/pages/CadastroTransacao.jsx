@@ -1,3 +1,4 @@
+// CadastroTransacao.jsx
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -6,13 +7,16 @@ import Input from "../components/Input";
 import Select from "../components/Select";
 import Button from "../components/Button";
 import transacaoServices from "../services/TransacaoService";
+import CategoriaService from "../services/CategoriaService";
 
 function CadastroTransacao() {
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     mode: "onTouched",
@@ -22,14 +26,14 @@ function CadastroTransacao() {
       descricao: "",
       valor: "",
       dataRealizacao: "",
-      categoriaId: "",
-      tipoId: "",
+      categoria: "",
     },
   });
 
   const [submitError, setSubmitError] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [categorias,setCategorias] = useState([]);
 
   useEffect(() => {
     register("nome", { required: "Nome é obrigatório." });
@@ -45,15 +49,18 @@ function CadastroTransacao() {
       validate: (value) =>
         !Number.isNaN(Date.parse(value)) || "Informe uma data válida.",
     });
-    register("categoriaId", { required: "Categoria é obrigatória." });
-    register("tipoId", { required: "Tipo é obrigatório." });
+    register("categoria", { required: "Categoria é obrigatória." });
   }, [register]);
 
   const handleFormChange = (event) => {
     const { name, value } = event.target;
     if (!name) return;
 
-    setValue(name, value, {
+    const parsedValue = (name === "categoria" && value !== "") && !isNaN(value) 
+    ? Number(value) 
+    : value;
+
+    setValue(name, parsedValue, {
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
@@ -69,15 +76,29 @@ function CadastroTransacao() {
       await transacaoServices.criar({
         ...data,
         valor: Number(data.valor),
+        categoriaId: data.categoria
       });
 
       setSubmitSuccess("Transação cadastrada com sucesso.");
+      setTimeout(() => navigate("/transacoes"), 1200);
     } catch (error) {
       setSubmitError(error.message || "Erro ao cadastrar transação.");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(()=>{
+    const disparar = async () => {
+      const resultado = await CategoriaService.listar();
+      if (resultado.success) {
+        setCategorias(resultado.data);
+      }else{
+        setCategorias(["outros"])
+      }
+    }
+    disparar();
+  },[])
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-white px-4 py-10 sm:px-8">
@@ -89,7 +110,7 @@ function CadastroTransacao() {
             noValidate
             className="flex flex-1 flex-col gap-2"
           >
-            <h1 className="text-xl font-bold text-[#0d4a4a] text-center mb-4">
+            <h1 className="text-xl font-bold text-[#114B5F] text-center mb-4">
               Cadastro de Transação
             </h1>
 
@@ -99,58 +120,87 @@ function CadastroTransacao() {
                 name="nome"
                 id="nome"
                 placeholder="Ex: Mercado"
+                value={watch("nome")}
+                onChange={handleFormChange}
               />
-              {errors.nome && <span className="px-2 text-xs text-rose-600">{errors.nome.message}</span>}
+              {errors.nome && (
+                <span className="px-2 text-xs text-rose-600">
+                  {errors.nome.message}
+                </span>
+              )}
 
               <Input
                 label="Descrição"
                 name="descricao"
                 id="descricao"
                 placeholder="Ex: Compra mensal"
+                value={watch("descricao")}
+                onChange={handleFormChange}
               />
-              {errors.descricao && <span className="px-2 text-xs text-rose-600">{errors.descricao.message}</span>}
+              {errors.descricao && (
+                <span className="px-2 text-xs text-rose-600">
+                  {errors.descricao.message}
+                </span>
+              )}
 
               <Input
-                label="Valor"
+                label="Valor(R$)"
                 name="valor"
                 id="valor"
                 type="number"
                 placeholder="Ex: 150.00"
+                value={watch("valor")}
+                onChange={handleFormChange}
               />
-              {errors.valor && <span className="px-2 text-xs text-rose-600">{errors.valor.message}</span>}
+              {errors.valor && (
+                <span className="px-2 text-xs text-rose-600">
+                  {errors.valor.message}
+                </span>
+              )}
 
               <Input
                 label="Data de realização"
                 name="dataRealizacao"
                 id="dataRealizacao"
                 type="date"
+                value={watch("dataRealizacao")}
+                onChange={handleFormChange}
               />
-              {errors.dataRealizacao && <span className="px-2 text-xs text-rose-600">{errors.dataRealizacao.message}</span>}
+              {errors.dataRealizacao && (
+                <span className="px-2 text-xs text-rose-600">
+                  {errors.dataRealizacao.message}
+                </span>
+              )}
 
               <Select
                 label="Natureza"
                 name="natureza"
                 id="natureza"
-                placeholder="Selecione a natureza"
+                placeholder="Selecione"
                 options={["receita", "despesa"]}
+                value={watch("natureza")}
+                onChange={handleFormChange}
               />
-              {errors.natureza && <span className="px-2 text-xs text-rose-600">{errors.natureza.message}</span>}
+              {errors.natureza && (
+                <span className="px-2 text-xs text-rose-600">
+                  {errors.natureza.message}
+                </span>
+              )}
 
-              <Input
-                label="Categoria ID"
-                name="categoriaId"
-                id="categoriaId"
-                placeholder="Informe o ID da categoria"
+              <Select
+                label="Categoria"
+                name="categoria"
+                id="categoria"
+                placeholder="Selecione"
+                options={categorias}
+                value={watch("categoria")}
+                onChange={handleFormChange}
               />
-              {errors.categoriaId && <span className="px-2 text-xs text-rose-600">{errors.categoriaId.message}</span>}
-
-              <Input
-                label="Tipo ID"
-                name="tipoId"
-                id="tipoId"
-                placeholder="Informe o ID do tipo"
-              />
-              {errors.tipoId && <span className="px-2 text-xs text-rose-600">{errors.tipoId.message}</span>}
+              {errors.categoria && (
+                <span className="px-2 text-xs text-rose-600">
+                  {errors.categoria.message}
+                </span>
+              )}
             </fieldset>
 
             {submitError && (
@@ -165,26 +215,33 @@ function CadastroTransacao() {
               </p>
             )}
 
-            <div className="flex flex-1 flex-col md:flex-row">
-              <Button
-                label={loading ? "Salvando..." : "Salvar"}
-                name="salvar"
-                id="salvar"
-                disabled={loading}
-                grande
-                bgColor="#114B5F"
-                fontcolor="#fff"
-              />
-
-              <section className="flex flex-col m-2">
-                <button
-                  type="button"
+            <div className="flex flex-col sm:flex-row sm:mt-2">
+              <div className="sm:w-fit">
+                <Button
+                  label={loading ? "Salvando..." : "Salvar"}
+                  name="salvar"
+                  id="salvar"
+                  tipo="submit"
+                  disabled={loading}
+                  grande
+                  bgColor="#114B5F"
+                  fontcolor="#fff"
+                  className="sm:text-sm sm:h-[35px] sm:px-8"
+                />
+              </div>
+              <div className="sm:w-fit">
+                <Button
+                  label="Cancelar"
+                  name="cancelar"
+                  id="cancelar"
+                  tipo="button"
+                  grande
+                  bgColor="#EEE5E9"
+                  fontcolor="#114B5F"
                   onClick={() => navigate("/transacoes")}
-                  className="rounded-[15px] h-[50px] text-[20px] font-bold border border-[#114B5F] text-[#114B5F] bg-[#EEE5E9]"
-                >
-                  Cancelar
-                </button>
-              </section>
+                  className="sm:text-sm sm:h-[35px] sm:px-6"
+                />
+              </div>
             </div>
           </form>
         </Conteiner>

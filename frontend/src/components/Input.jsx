@@ -25,7 +25,7 @@ export default function Input({
 }) {
   return (
     <section
-      className={`flex flex-col m-2 ${type === "date" ? "flex-1 max-w-[17rem]" : ""}`}
+      className={`flex flex-col m-2 ${type === "date" ? "flex-1 max-w-[15rem] " : ""}`}
     >
       <label htmlFor={id} className="p-2 text-[15px]">
         {label}

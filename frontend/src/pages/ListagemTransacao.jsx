@@ -41,10 +41,6 @@ function ListagemTransacao() {
     return <p className="m-2 text-red-600">{erro}</p>;
   }
 
-  if (transacoes.length === 0) {
-    return <p className="m-2 text-slate-600">Nenhuma transação encontrada.</p>;
-  }
-
   return <ListingBlock options={transacoes} type="transacoes" />;
 }
 

@@ -23,7 +23,7 @@ export default function GraficoPizza({labels,datasets}) {
   };
 
   return (
-    <div className="w-[300px] h-[300px] m-4 p-4 shadow-md rounded-xl border">
+    <div className="m-4 p-4 shadow-md rounded-xl border md:max-h-[250px]">
       <Pie data={data} />
     </div>
   );

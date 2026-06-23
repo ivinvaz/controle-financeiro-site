@@ -1,11 +1,10 @@
 const Usuario = require('../models/Usuario');
 const Categoria = require('../models/Categoria');
-const Tipo = require('../models/Tipo');
 const Transacao = require('../models/Transacao');
 
 async function createTransacao(req, res) {
     const { nome, natureza, descricao, valor, dataRealizacao } = req.body;
-    const { categoriaId, tipoId } = req.body;
+    const { categoriaId } = req.body;
     const usuarioId = req.user.id;
 
     try {
@@ -16,10 +15,6 @@ async function createTransacao(req, res) {
         const categoria = await Categoria.findById(categoriaId);
         if (!categoria) {
             return res.status(404).json({ message: 'Categoria não encontrada.' });
-        }
-        const tipo = await Tipo.findById(tipoId);
-        if (!tipo) {
-            return res.status(404).json({ message: 'Tipo não encontrado.' });
         }
         if (valor <= 0) {
             return res.status(400).json({ message: 'O valor deve ser um número positivo.' });
@@ -33,7 +28,6 @@ async function createTransacao(req, res) {
         const novaTransacao = await Transacao.create({
             Usuario: usuarioId,
             Categoria: categoriaId,
-            Tipo: tipoId,
             nome,
             natureza,
             descricao,
@@ -76,7 +70,7 @@ async function getTransacaoById(req, res) {
 async function updateTransacao(req, res) {
     const { id } = req.params;
     const { nome, natureza, descricao, valor, dataRealizacao } = req.body;
-    const { categoriaId, tipoId } = req.body;
+    const { categoriaId } = req.body;
     const usuarioId = req.user.id;
     try {
         const transacaoExistente = await Transacao.findOne({ _id: id, Usuario: usuarioId });
@@ -89,12 +83,6 @@ async function updateTransacao(req, res) {
                 return res.status(404).json({ message: 'Categoria não encontrada.' });
             }
         }
-        if (tipoId) {
-            const tipo = await Tipo.findById(tipoId);
-            if (!tipo) {
-                return res.status(404).json({ message: 'Tipo não encontrado.' });
-            }
-        }
         if (valor !== undefined && valor <= 0) {
             return res.status(400).json({ message: 'O valor deve ser um número positivo.' });
         }
@@ -104,7 +92,7 @@ async function updateTransacao(req, res) {
         if (natureza !== undefined && natureza !== 'receita' && natureza !== 'despesa') {
             return res.status(400).json({ message: 'A natureza deve ser "receita" ou "despesa".' });
         }
-        const transacaoAtualizada = await Transacao.findByIdAndUpdate(id, { nome, natureza, descricao, valor, dataRealizacao, Categoria: categoriaId, Tipo: tipoId }, { new: true });
+        const transacaoAtualizada = await Transacao.findByIdAndUpdate(id, { nome, natureza, descricao, valor, dataRealizacao, Categoria: categoriaId }, { new: true });
         return res.status(200).json({ message: 'Transação atualizada com sucesso.', transacao: transacaoAtualizada });
     } catch (error) {
         console.error('Erro ao atualizar transação:', error);

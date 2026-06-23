@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-
+const seedCategorias = require('./seedCategorias');
 
 function loadDatabaseConfig() {
     const dbUri = process.env.DATABASE_URL;
@@ -13,7 +13,10 @@ function loadDatabaseConfig() {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
-    .then(() => console.log('Conectado ao MongoDB'))
+    .then(async () => {
+        console.log('Conectado ao MongoDB');
+        await seedCategorias();
+    })
     .catch((err) => console.error('Erro ao conectar ao MongoDB:', err));
 }
 

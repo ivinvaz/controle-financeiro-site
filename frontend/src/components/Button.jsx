@@ -34,7 +34,7 @@ export default function Button({
         disabled={disabled}
         onClick={onClick}
         style={{ backgroundColor: bgColor, color: fontcolor }}
-        className={`rounded-[15px] ${grande ? "h-[50px] font-bold" : "h-[35px]"} text-[20px] disabled:cursor-not-allowed disabled:opacity-70 ${className}`}
+        className={`cursor-pointer rounded-[15px] ${grande ? "h-[50px] font-bold" : "h-[35px]"} text-[20px] disabled:cursor-not-allowed disabled:opacity-70 ${className}`}
       >
         {label}
       </button>
