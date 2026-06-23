@@ -128,6 +128,7 @@ export default function ListingBlock({options,type}){
                                     {type =="transacoes" && <p className="text-sm md:hidden">Natureza: {item.natureza}</p>}
                                     {type === "transacoes" && <p className="text-sm">Categoria: {obterNomeCategoria(item.categoria)}</p>}
                                     {type =="transacoes" && <p className="text-sm">Descrição: {item.descricao}</p>}
+                                    {type !== "transacoes" && <p className="block sm:hidden text-sm">Data: {item.categoria}</p>}
                                 </div>
                                 <article className="bg-[#EEE5E9] p-2 justify-center items-center rounded-2xl rounded-t-none flex" >
                                     <button className="cursor-pointer text-[15px] font-bold" id={item.id} onClick={EditarItem}>Editar</button>

@@ -69,7 +69,7 @@ export default function Dashboard() {
                 </section>
 
                 <section className='flex  flex-col md:flex-row'>
-                    <section className="flex flex-col md:flex-row md:min-w-[40rem]">
+                    <section className="flex flex-col md:flex-row md:min-w-[50rem]">
                         <section className="flex gap-2 m-2 md:flex-1">
                             <Box title={"Receita"} text={`R$${sumReceita}`} fontcolor={"black"}  bgColor={"6CAE75"} />
                             <Box title={"Despesas"} text={`R$${sumDespesa}`} fontcolor={"black"}  bgColor={"FCAA67"} />
@@ -88,8 +88,7 @@ export default function Dashboard() {
                     </section>
 
                     <section className="flex gap-2 m-2 md:flex-1">
-                        <Box title={"Metas"} text={`R$${sumMeta}`} fontcolor={"black"}  bgColor={"B4C5E4"} />
-                        <Box title={"Margem"} text={`R$${sumMeta-(sumReceita-sumDespesa)}`} fontcolor={"black"}  bgColor={"B4C5E4"} />
+                        <Box title={"Meta"} text={`R$${sumMeta}`} fontcolor={"black"}  bgColor={"B4C5E4"} />
                     </section>    
                 </section>
 
@@ -98,7 +97,7 @@ export default function Dashboard() {
                     <Button label={"Despesas"} name={"despesasButton"} id={"despesasButton"} grande={false} fontcolor={"black"} bgColor={corDespesa} disabled={false} onClick={clickButtonDespesa}/>
                 </section>
 
-                <section className="flex gap-2 flex-1 m-2 flex-col items-center justify-center sm:flex-row">
+                <section className="flex gap-2 flex-1 m-2 flex-col items-center justify-left sm:flex-row">
 
                     { (!dadosDashboard || dadosDashboard.semDados) ? (
                         <section>
@@ -109,9 +108,10 @@ export default function Dashboard() {
                             <p>Carregando dados...</p>
                         </section>
                     ) : (
-                        <section>
+                        <section className='md:flex'>
                             {dadosDashboard.grafico?.pizza && (<GraficoPizza labels={dadosDashboard.grafico.pizza.labels} datasets={dadosDashboard.grafico.pizza.datasets} />)}
                             {dadosDashboard.grafico?.linha && (<GraficoLinha labels={dadosDashboard.grafico.linha.labels} datasets={dadosDashboard.grafico.linha.datasets} />)}
+                            
                         </section>
                     )}
                 </section>

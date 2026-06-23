@@ -1,5 +1,6 @@
 import metaService from "./MetaService";
 import transacaoServices from "./TransacaoService";
+import CategoriaService from "./CategoriaService"; 
 
 const { consultarTodos } = transacaoServices;
 const { listar } = metaService;
@@ -7,15 +8,24 @@ const { listar } = metaService;
 function SomarValores(lista, campoValor = "valor") {
   return lista.reduce((soma, item) => {
     const valid = Number(item?.[campoValor] ?? 0);
-    return soma + valid ? valid : 0;
-  });
+    return soma + valid;
+  }, 0); 
 }
 
-function AgruparPorCategoria(transacoes) {
+function AgruparPorCategoria(transacoes, mapaCategorias) {
   const grupos = {};
   transacoes.forEach((transacao) => {
-    const nomeCategoria = transacao.Categoria?.nome ?? "Sem categoria";
-    if (!grupos[nomeCategoria]) grupos[nomeCategoria] = [];
+    const categoriaId = transacao.Categoria;
+    
+    const idString = typeof categoriaId === 'object' && categoriaId !== null 
+      ? (categoriaId._id || String(categoriaId))
+      : String(categoriaId ?? '').trim();
+
+    const nomeCategoria = mapaCategorias[idString] ?? "Sem categoria";
+
+    if (!grupos[nomeCategoria]) {
+      grupos[nomeCategoria] = [];
+    }
     grupos[nomeCategoria].push(transacao);
   });
   return grupos;
@@ -46,131 +56,79 @@ function GetCor(indice) {
 }
 
 async function GetTransacoesDate(DataInicio = null, DataFim = null) {
-  const resposta = await consultarTodos();  
-  const transacoes = resposta?.data || (Array.isArray(resposta) ? resposta : []);
+  const resposta = await consultarTodos();
+  const transacoes = resposta?.transacoes || resposta?.data || (Array.isArray(resposta) ? resposta : []);
 
   if (transacoes.length === 0) return [];
-  let transacoesFiltradas = null;
 
-  if (DataFim === null && DataInicio === null) {
+  const inicioDoDia = (data) => {
+    const d = new Date(data);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
+  const fimDoDia = (data) => {
+    const d = new Date(data);
+    d.setHours(23, 59, 59, 999);
+    return d;
+  };
+
+  let inicio = DataInicio ? inicioDoDia(DataInicio) : null;
+  let fim = DataFim ? fimDoDia(DataFim) : null;
+
+  if (!inicio && !fim) {
     const hoje = new Date();
-    const mesAtual = hoje.getMonth();
-    const anoAtual = hoje.getFullYear();
-
-    transacoesFiltradas = transacoes.filter((transacao) => {
-      const data = new Date(transacao.dataRealizacao);
-      return data.getMonth() === mesAtual && data.getFullYear() === anoAtual;
-    });
-  } else if (DataInicio !== null && DataFim === null) {
-    const inicio = new Date(DataInicio);
-    transacoesFiltradas = transacoes.filter((transacao) => {
-      const data = new Date(transacao.dataRealizacao);
-      return data > inicio;
-    });
-  } else if (DataInicio === null && DataFim !== null) {
-    const fim = new Date(DataFim);
-    transacoesFiltradas = transacoes.filter((transacao) => {
-      const data = new Date(transacao.dataRealizacao);
-      return data < fim;
-    });
-  } else if (DataInicio !== null && DataFim !== null) {
-    const inicio = new Date(DataInicio);
-    const fim = new Date(DataFim);
-    transacoesFiltradas = transacoes.filter((transacao) => {
-      const data = new Date(transacao.dataRealizacao);
-      return data > inicio && data < fim;
-    });
+    fim = fimDoDia(new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0));
   }
 
-  return transacoesFiltradas ?? [];
+  return transacoes.filter((transacao) => {
+    const dataTransacao = new Date(transacao.dataRealizacao);
+
+    if (inicio && dataTransacao < inicio) return false;
+    if (fim && dataTransacao > fim) return false;
+
+    return true;
+  });
 }
 
 async function GetMetasDate(DataInicio = null, DataFim = null) {
   const resposta = await listar();
-  const metas = resposta?.data?.metas || [];
+  const metas = resposta?.metas || resposta?.data?.metas || (Array.isArray(resposta) ? resposta : []);
 
   if (metas.length === 0) return [];
-  let metasFiltradas = null;
 
-  if (DataInicio === null && DataFim === null) {
+  let inicioFiltro = DataInicio ? new Date(DataInicio) : null;
+  let fimFiltro = DataFim ? new Date(DataFim) : null;
+
+  if (!inicioFiltro && !fimFiltro) {
     const hoje = new Date();
-    const mesAtual = hoje.getMonth();
-    const anoAtual = hoje.getFullYear();
-
-    metasFiltradas = metas.filter((meta) => {
-      return meta.mes === mesAtual && meta.ano === anoAtual;
-    });
-  } else if (DataInicio !== null && DataFim === null) {
-    const inicio = new Date(DataInicio);
-    const mesInicio = inicio.getMonth();
-    const anoInicio = inicio.getFullYear();
-
-    metasFiltradas = metas.filter((meta) => {
-      return (
-        meta.ano > anoInicio ||
-        (meta.ano === anoInicio && meta.mes >= mesInicio)
-      );
-    });
-  } else if (DataInicio === null && DataFim !== null) {
-    const fim = new Date(DataFim);
-    const mesFim = fim.getMonth();
-    const anoFim = fim.getFullYear();
-
-    metasFiltradas = metas.filter((meta) => {
-      return meta.ano < anoFim || (meta.ano === anoFim && meta.mes <= mesFim);
-    });
-  } else {
-    const inicio = new Date(DataInicio);
-    const fim = new Date(DataFim);
-    const mesInicio = inicio.getMonth();
-    const anoInicio = inicio.getFullYear();
-    const mesFim = fim.getMonth();
-    const anoFim = fim.getFullYear();
-
-    metasFiltradas = metas.filter((meta) => {
-      const depoisDoInicio =
-        meta.ano > anoInicio ||
-        (meta.ano === anoInicio && meta.mes >= mesInicio);
-      const antesDoFim =
-        meta.ano < anoFim || (meta.ano === anoFim && meta.mes <= mesFim);
-      return depoisDoInicio && antesDoFim;
-    });
+    inicioFiltro = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+    fimFiltro = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0, 23, 59, 59);
   }
 
-  return metasFiltradas ?? [];
+  return metas.filter((meta) => {
+    const dataValidade = meta.dataValidade || meta.validade || new Date(meta.ano, meta.mes - 1, 1);
+    const limiteMeta = new Date(dataValidade);
+
+    return inicioFiltro <= limiteMeta;
+  });
 }
 
 async function GetSumReceitas(DataInicio = null, DataFim = null) {
   const transacoes = (await GetTransacoesDate(DataInicio, DataFim)) ?? [];
   if (transacoes.length === 0) return 0;
-
-  const transacoesReceita = transacoes.filter(
-    (transacao) => transacao.natureza === "receita",
-  );
-  const sumReceita = SomarValores(transacoesReceita);
-
-  return sumReceita;
+  return SomarValores(transacoes.filter(t => t.natureza === "receita"));
 }
 
 async function GetSumDespesas(DataInicio = null, DataFim = null) {
   const transacoes = (await GetTransacoesDate(DataInicio, DataFim)) ?? [];
   if (transacoes.length === 0) return 0;
-
-  const transacoesDespesa = transacoes.filter(
-    (transacao) => transacao.natureza === "despesa",
-  );
-  const sumDespesa = SomarValores(transacoesDespesa);
-
-  return sumDespesa;
+  return SomarValores(transacoes.filter(t => t.natureza === "despesa"));
 }
 
 async function GetSumMetas(DataInicio = null, DataFim = null) {
   const metas = (await GetMetasDate(DataInicio, DataFim)) ?? [];
-  if (metas.length === 0) return 0;
-
-  const sumMeta = SomarValores(metas, "meta");
-
-  return sumMeta;
+  return SomarValores(metas, "meta");
 }
 
 async function GetDashboardData({
@@ -183,10 +141,19 @@ async function GetDashboardData({
     return { semDados: true, resumo: null, grafico: null };
   }
 
-  const [todasTransacoes, todasMetas] = await Promise.all([
+  const [todasTransacoes, todasMetas, respostaCategorias] = await Promise.all([
     GetTransacoesDate(DataInicio, DataFim),
     GetMetasDate(DataInicio, DataFim),
+    CategoriaService.listar() 
   ]);
+
+  const listaCategorias = respostaCategorias?.data || respostaCategorias?.categorias || (Array.isArray(respostaCategorias) ? respostaCategorias : []);
+  const mapaCategorias = {};
+  listaCategorias.forEach(cat => {
+    if (cat._id && cat.nome) {
+      mapaCategorias[cat._id] = cat.nome;
+    }
+  });
 
   if (todasTransacoes.length === 0 && todasMetas.length === 0) {
     return { semDados: true, resumo: null, grafico: null };
@@ -198,12 +165,8 @@ async function GetDashboardData({
     return false;
   });
 
-  const transacoesReceita = transacoesFiltradas.filter(
-    (transacao) => transacao.natureza === "receita",
-  );
-  const transacoesDespesa = transacoesFiltradas.filter(
-    (transacao) => transacao.natureza === "despesa",
-  );
+  const transacoesReceita = transacoesFiltradas.filter((t) => t.natureza === "receita");
+  const transacoesDespesa = transacoesFiltradas.filter((t) => t.natureza === "despesa");
 
   const sumReceita = SomarValores(transacoesReceita);
   const sumDespesa = SomarValores(transacoesDespesa);
@@ -224,7 +187,7 @@ async function GetDashboardData({
       ],
     };
   } else {
-    const grupos = AgruparPorCategoria(transacoesFiltradas);
+    const grupos = AgruparPorCategoria(transacoesFiltradas, mapaCategorias);
     const nomesCategorias = Object.keys(grupos);
 
     pizza = {
@@ -241,41 +204,44 @@ async function GetDashboardData({
   const datasetsLinha = [];
 
   if (ambosAtivos) {
-    const receitaPorDia = new Array(labels.length).fill(0);
-    const despesaPorDia = new Array(labels.length).fill(0);
+    const movimentacaoPorDia = new Array(labels.length).fill(0);
 
     transacoesReceita.forEach((t) => {
       const dia = new Date(t.dataRealizacao).getDate();
-      receitaPorDia[dia - 1] += t.valor;
+      if (dia <= labels.length) movimentacaoPorDia[dia - 1] += Number(t.valor || 0);
     });
+    
     transacoesDespesa.forEach((t) => {
       const dia = new Date(t.dataRealizacao).getDate();
-      despesaPorDia[dia - 1] += t.valor;
+      if (dia <= labels.length) movimentacaoPorDia[dia - 1] -= Number(t.valor || 0); 
     });
 
-    datasetsLinha.push(
-      {
-        label: "Receitas",
-        data: receitaPorDia,
-        borderColor: "#4ade80",
-        backgroundColor: "#4ade80",
-      },
-      {
-        label: "Despesas",
-        data: despesaPorDia,
-        borderColor: "#f87171",
-        backgroundColor: "#f87171",
-      },
-    );
+    const saldoAcumuladoPorDia = new Array(labels.length).fill(0);
+    let saldoAcumulado = 0;
+
+    for (let i = 0; i < labels.length; i++) {
+      saldoAcumulado += movimentacaoPorDia[i];
+      saldoAcumuladoPorDia[i] = saldoAcumulado;
+    }
+
+    datasetsLinha.push({
+      label: "Saldo em Banco",
+      data: saldoAcumuladoPorDia,
+      borderColor: "#114B5F", 
+      backgroundColor: "rgba(17, 75, 95, 0.1)",
+      tension: 0.2, 
+      fill: false 
+    });
+
   } else {
-    const grupos = AgruparPorCategoria(transacoesFiltradas);
+    const grupos = AgruparPorCategoria(transacoesFiltradas, mapaCategorias);
     const nomesCategorias = Object.keys(grupos);
 
     nomesCategorias.forEach((nome, i) => {
       const valoresPorDia = new Array(labels.length).fill(0);
       grupos[nome].forEach((t) => {
         const dia = new Date(t.dataRealizacao).getDate();
-        valoresPorDia[dia - 1] += t.valor;
+        if (dia <= labels.length) valoresPorDia[dia - 1] += Number(t.valor || 0);
       });
       datasetsLinha.push({
         label: nome,
@@ -286,22 +252,19 @@ async function GetDashboardData({
     });
   }
 
-  datasetsLinha.push({
-    label: "Metas",
-    data: new Array(labels.length).fill(sumMeta),
-    borderColor: "#60a5fa",
-    backgroundColor: "#60a5fa",
-    borderDash: [5, 5],
-  });
+  if (ambosAtivos) {
+    datasetsLinha.push({
+      label: "Metas",
+      data: new Array(labels.length).fill(sumMeta),
+      borderColor: "#60a5fa",
+      backgroundColor: "#60a5fa",
+      borderDash: [5, 5],
+    });
+  }
 
   return {
     semDados: false,
-    resumo: {
-      sumReceita,
-      sumDespesa,
-      sumMeta,
-      margem: sumReceita - sumDespesa,
-    },
+    resumo: { sumReceita, sumDespesa, sumMeta, margem: sumReceita - sumDespesa },
     grafico: {
       pizza,
       linha: { labels, datasets: datasetsLinha },

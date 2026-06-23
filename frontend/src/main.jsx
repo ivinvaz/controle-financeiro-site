@@ -12,6 +12,7 @@ import {
   PointElement,
   LinearScale,
   CategoryScale,
+  Filler
 } from "chart.js";
 
 ChartJS.register(
@@ -21,7 +22,8 @@ ChartJS.register(
   LineElement,     
   PointElement, 
   LinearScale,    
-  CategoryScale   
+  CategoryScale,
+  Filler
 );
 
 createRoot(document.getElementById("root")).render(

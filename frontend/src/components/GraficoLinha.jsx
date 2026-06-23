@@ -22,7 +22,7 @@ export default function GraficoLinha({labels,datasets}) {
   };
 
   return (
-    <div className="w-[500px] h-[300px] m-4 p-4 shadow-md rounded-xl border">
+    <div className="m-4 p-4 shadow-md rounded-xl border">
       <Line data={data} />
     </div>
   );
